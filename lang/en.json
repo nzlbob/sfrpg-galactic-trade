@@ -1,0 +1,106 @@
+{
+  "TYPES.JournalEntryPage.sfrpg-galactic-trade.planet": "Planet",
+  "SFRPG_GT": {
+    "Planets": {
+
+      "Space": {
+        "Near": "Near Space",
+        "Pact": "Pact Worlds",
+        "Vast": "The Vast",
+        "Mobile": "Mobile",
+        "Drift": "Drift Space"
+      },
+      "Biome": {
+        "Airborne": "Airborne",
+        "Aquáti": "Aquáti",
+        "Arctic": "Arctic",
+        "Desert": "Desert",
+        "Forest": "Forest",
+        "Marsh": "Marsh",
+        "Mountain": "Mountain",
+        "Plains": "Plains",
+        "Space": "Space",
+        "Subterranean": "Subterranean",
+        "Urban": "Urban",
+        "Weird": "Weird"
+      },
+      "Type": {
+        "Terrestrial": "Terrestrial",
+        "Gasgiant": "Gas giant",
+        "Irregular": "Irregular",
+        "Satellite": "Satellite",
+        "Asteroid": "Asteroid",
+        "Colonyship": "Colony ship",
+        "Spacestation": "Space station"
+      },
+      "Atmosphere": {
+        "Normal": "Normal",
+        "None": "None",
+        "Thin": "Thin",
+        "Thick": "Thick",
+        "Corrosiveortoxic": "Corrosive or toxic"
+      },
+      "Gravity": {
+        "Standard": "Standard",
+        "ZeroGravity": "Zero Gravity",
+        "Low": "Low",
+        "High": "High",
+        "Extreme": "Extreme"
+      },
+      "Affluence": {
+        "Rich": "Rich",
+        "AboveAverage": "Above Average",
+        "Average": "Average",
+        "BelowAverage": "Below Average",
+        "Poor": "Poor"
+      },
+      "ProductionType": {
+        "HighTech": "High Tech",
+        "TechInd": "Tech / Industry",
+        "Industrial": "Industrial",
+        "IndAgri": "Industry / Agricultural",
+        "Agri": "Agricultural",
+        "Penal": "Penal Colony",
+        "Trade": "Trading Hub"
+      },
+      "Government": {
+        "Anarchy": "Anarchy",
+        "Feudal": "Feudal",
+        "Multi-government": "Multi-government",
+        "Dictatorship": "Dictatorship",
+        "Communist": "Communist",
+        "Confederacy": "Confederacy",
+        "Democracy": "Democracy",
+        "CorporateState": "Corporate State"
+      }
+    },
+    "Goods": {
+      "Art or antiques  ": "Art or antiques  ",
+      "Base metals ": "Base metals ",
+      "Ceramics or glassware ": "Ceramics or glassware ",
+      "Chemicals ": "Chemicals ",
+      "Furniture ": "Furniture ",
+      "Hides or leather ": "Hides or leather ",
+      "Live animals ": "Live animals ",
+      "Machinery": "Machinery",
+      "Minerals or byproducts ": "Minerals or byproducts ",
+      "Paper products or books ": "Paper products or books ",
+      "Plastics": "Plastics",
+      "Precision equipment": "Precision equipment",
+      "Precious metals": "Precious metals",
+      "Prepared food": "Prepared food",
+      "Textiles": "Textiles",
+      "Toys or games": "Toys or games",
+      "Vegetable products": "Vegetable products",
+      "Vehicles": "Vehicles",
+      "Weapons or ammo": "Weapons or ammo",
+      "Wood": "Wood",
+      "Radioactives": "Radioactives",
+      "Convicts": "Convicts",
+      "Narcotics": "Narcotics",
+      "Electronics  ": "Electronics  ",
+      "Alien items": "Alien items",
+      "Robots": "Robots"
+    }
+  }
+}

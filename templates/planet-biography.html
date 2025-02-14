@@ -1,0 +1,113 @@
+<div class="flexcol bio-properties">
+
+    <img class="avatar" src="{{document.system.details.biography.fullBodyImage}}" title="{{actor.name}}&#10;{{localize 'SFRPG.ActorSheet.Biography.ImageTooltip'}}" data-edit="system.details.biography.fullBodyImage" width="200" height="250" />
+
+    {{#unless hideVitals}}
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'Location'}}</strong><br>@details.space">
+        <label class="singleLine">{{localize "Location"}}</label>
+        <select  {{#if locksheet}}disabled{{/if}} name="system.details.space">
+            {{ selectOptions config.planets.space selected=document.system.details.space blank=""
+            localize=true}}
+        </select>
+    </div>
+   
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
+        <label class="singleLine">{{localize "Astronomical Object"}}</label>
+        <select  {{#if locksheet}}disabled{{/if}} name="system.details.object">
+            {{ selectOptions config.planets.types selected=document.system.details.object blank=""
+            localize=true}}
+        </select>
+    </div>
+
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
+        <label class="singleLine">{{localize "Gravity"}}</label>
+        <select  {{#if locksheet}}disabled{{/if}} name="system.details.gravity">
+            {{ selectOptions config.planets.gravity selected=document.system.details.gravity blank=""
+            localize=true}}
+        </select>
+    </div>
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
+        <label class="singleLine">{{localize "Atmosphere"}}</label>
+        <select  {{#if locksheet}}disabled{{/if}} name="system.details.atmosphere">
+            {{ selectOptions config.planets.atmosphere selected=document.system.details.atmosphere
+            blank=""
+            localize=true}}
+        </select>
+    </div>
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
+        <label class="singleLine">{{localize "Government"}}</label>
+        <select {{#if locksheet}}disabled{{/if}} class="updateeconomy" name="system.attributes.economy.government" data-type="government">
+            {{ selectOptions config.planets.government
+            selected=document.system.attributes.economy.government blank=""
+            localize=true}}
+        </select>
+    </div>
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
+        <label class="singleLine">{{localize "Economy"}}</label>
+        <select {{#if locksheet}}disabled{{/if}} class="updateeconomy" name="system.attributes.economy.affluence" data-type="affluence">
+            {{ selectOptions config.planets.affluence
+            selected=document.system.attributes.economy.affluence
+            blank="" localize=true}}
+        </select>
+    </div>
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
+        <label class="singleLine">{{localize "Production Type"}}</label>
+        <select {{#if locksheet}}disabled{{/if}} class="updateeconomy" name="system.attributes.economy.productionType"
+        data-type="productionType">
+        {{ selectOptions config.planets.productionType
+        selected=document.system.attributes.economy.productionType blank="" localize=true}}
+    </select>
+    </div>
+<!---->
+    <div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'Year Length (in standard days)'}}</strong><br>@details.yearLength">
+        <label class="singleLine">{{localize "Year Length"}}</label>
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="text" name="system.details.yearLength" value="{{document.system.details.yearLength}}" data-dtype="String" placeholder="{{localize 'SFRPG.ActorSheet.Biography.DateOfBirthPlaceholder'}}" />
+    </div>
+    
+
+<!---->
+
+   
+    {{/unless}}
+    <div class="form-group singleFlex" data-tippy-content="<strong>{{localize 'SFRPG.ActorSheet.Biography.OtherVisuals'}}</strong><br>@details.biography.otherVisuals">
+        <label>{{localize "SFRPG.ActorSheet.Biography.OtherVisuals"}}</label>
+    </div>
+
+    <textarea name="system.details.biography.otherVisuals">{{system.details.biography.otherVisuals}}</textarea>
+</div>
+
+<div class="flexcol">
+    <nav class="sheet-subnavigation biotabs" data-group="biographyTabs">
+        <a class="item active{{#if system.details.biography.value}} highlight{{/if}}" data-tab="biography">{{localize "SFRPG.ActorSheet.Biography.TabBio"}}</a>
+        {{#if isNPC}}
+        <a class="item active{{#if system.details.ecology.value}} highlight{{/if}}" data-tab="ecology">{{localize "SFRPG.ActorSheet.Biography.TabEcology"}}</a>
+        {{/if}}
+      
+        <a class="item{{#if system.details.biography.gmNotes}} highlight{{/if}}" data-tab="gmNotes">{{localize "SFRPG.ActorSheet.Biography.TabGM"}} {{#if system.details.biography.gmNotes}} (!){{/if}}</a>
+   
+    </nav>
+
+    <section class="bio-body">
+        <div class="tab flexrow" data-group="biographyTabs" data-tab="biography">
+    
+            {{editor
+                enrichedBiography
+                target="system.details.biography.value"
+                button=true
+                editable=editable
+                engine=editor.engine
+            }}
+        </div>
+      
+        <div class="tab flexrow" data-group="biographyTabs" style="flex: 0 0 100% " data-tab="gmNotes">
+            {{editor
+                enrichedGMNotes
+                target="system.details.biography.gmNotes"
+                button=true
+                editable=editable
+                engine=editor.engine
+            }}
+        </div>
+  
+    </section>
+</div>

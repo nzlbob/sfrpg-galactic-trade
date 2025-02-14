@@ -1,0 +1,154 @@
+{{#if data.title.show}}
+{{console this}}
+<header class="journal-page-header">
+    <h{{data.title.level}}>{{data.name}}</h{{data.title.level}}>
+</header>
+{{/if}}
+<div class="sfrpg-galactic-trade sheet planetsheet">
+      <!--
+{{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs"  data-group="primary">
+
+        <a class="item" data-tab="detail">Details</a>
+        <a class="item" data-tab="stuff">{{ localize "Trade" }}</a>
+
+
+
+      
+                <a class="item" data-tab="bio">{{ localize "SFRPG.Features" }}</a>
+        <a class="item" data-tab="thing">{{ localize "SFRPG.Features" }}</a>
+    <a class="item" data-tab="combat">Combat</a>
+    <a class="item" data-tab="perks">Perks</a>
+	<a class="item" data-tab="items">Items</a>
+    <a class="item" data-tab="achievements">Achievements</a>
+     <a class="item" data-tab="attributes">Attributes</a>
+
+
+
+    </nav>-->
+    <nav class="sheet-tabs newtabs" data-group="newTabs">
+        <a class="item active{{#if system.details.biography.value}} highlight{{/if}}" data-tab="details">{{localize "Details"}}</a>
+      
+        <a class="item{{#if system.details.biography.gmNotes}} highlight{{/if}}" data-tab="stuff">{{localize "Trade"}} {{#if system.details.biography.gmNotes}} (!){{/if}}</a>
+   
+    </nav>
+
+
+
+
+
+    <section class="new-body">
+        <div class="tab flexrow" data-group="newTabs" data-tab="details">
+            {{> "modules/sfrpg-galactic-trade/templates/planet-biography.html" hideVitals=false locksheet=true}}
+        </div>
+      
+        <div class="tab flexrow" data-group="newTabs" style="flex: 0 0 100% " data-tab="stuff">
+
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="11">
+                                Trade Data as at {{tradeDataDate.date}} 
+                            </th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2">
+                                Goods
+                            </th>
+                            <th colspan="2">
+                                Credits / Tons
+                            </th>
+                            <th colspan="2">
+                                BP / Lots
+                            </th>
+                            <th colspan="2">
+                                Trade
+                            </th>       
+                            <th colspan="2">
+                                Trade
+                            </th>  
+                            <th colspan="2">
+                                Illegal Trade
+                            </th>      
+                        </tr>
+                        <tr>
+                            <th>
+                                kCr
+                            </th>
+                            <th>
+                                tons
+                            </th>
+                            <th>
+                                BP
+                            </th>
+                            <th>
+                                Lots
+                            </th>
+                            <th>
+                                Buy
+                            </th>
+                            <th>
+                                Sell
+                            </th>
+                            <th>
+                                Buy
+                            </th>
+                            <th>
+                                Sell
+                            </th>
+                            <th>
+                                Buy
+                            </th>
+                            <th>
+                                Sell
+                            </th>
+                        </tr>
+                    </thead>
+                    {{#each document.system.trade.goods as |category id|}}
+                    <tr  data-tooltip = "Hello {{category.tooltip}}">
+                       <!--console category--> 
+                        <td>
+                            {{localize (tradelookup ../config.goods id "")}}
+                        </td>
+                        <td>
+                            {{category.price}}
+                        </td>
+                        <td>
+                            {{category.quantity}}
+                        </td>
+                        <td>
+                            {{category.bp}}
+                        </td>
+                        <td>
+                            {{category.lots}}
+                        </td>
+                        <td>
+                            <input   type = "button" value = "Buy" class="buy" data-id="{{id}}" data-location="{{../document.uuid}}">
+                        </td>
+                        <td>
+                           <input type = "button" value = "Sell" class="sell" data-id="{{id}}">
+                        </td>
+                        <td>
+                            <input name= "system.trade.goods.{{id}}.noBuy" {{checked (tradelookup ../document.system.trade.goods id "noBuy")}} type = "checkbox"  class="TradeBuy" data-id="{{id}}">
+                        </td>
+                        <td>
+                           <input name= "system.trade.goods.{{id}}.noSell" {{checked (tradelookup ../document.system.trade.goods id "noSell")}} type = "checkbox"  class="TradeSell" data-id="{{id}}">
+                        </td>
+                        <td>
+                            <input name= "system.trade.goods.{{id}}.illegalBuy"  {{checked (tradelookup ../document.system.trade.goods id "illegalBuy")}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
+                        </td>
+                        <td>
+                           <input name= "system.trade.goods.{{id}}.illegalSell"  {{checked (tradelookup ../document.system.trade.goods id "illegalSell")}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
+                        </td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+            </section>  
+      
+
+
+
+
+

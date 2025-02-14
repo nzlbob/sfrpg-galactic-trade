@@ -1,0 +1,13 @@
+<form id="entity-create" autocomplete="off" onsubmit="event.preventDefault();">
+    <div class="form-group">
+        <label>{{localize "Cargo Type"}}</label>
+        <label>{{name}}</label>
+    </div>
+{{console this}}
+<div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'Year Length (in standard days)'}}</strong><br>@details.yearLength">
+    <label class="singleLine">{{localize "Quantity"}}</label>
+    <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="qty" value=6 placeholder="{{localize 'SFRPG.ActorSheet.Biography.DateOfBirthPlaceholder'}}" />
+</div>
+</form>
+
+
