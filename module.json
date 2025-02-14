@@ -7,7 +7,7 @@
       "name": "bob"
       }
       ],
-    "version": "0.2.1",
+    "version": "0.22",
     "compatibility": {
       "minimum": "10",
       "verified": "12",
@@ -98,7 +98,7 @@
       ]
       },
       "url": "https://github.com/nzlbob/sfrpg-galactic-trade",
-      "manifest": "https://raw.githubusercontent.com/nzlbob/sfrpg-galactic-trade/main/system.json",
+      "manifest": "https://github.com/nzlbob/sfrpg-galactic-trade/blob/main/module.json",
       "download": "https://github.com/nzlbob/sfrpg-galactic-trade/archive/refs/heads/main.zip",
       "media": [
     {
