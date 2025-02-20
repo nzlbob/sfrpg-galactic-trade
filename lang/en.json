@@ -2,7 +2,6 @@
   "TYPES.JournalEntryPage.sfrpg-galactic-trade.planet": "Planet",
   "SFRPG_GT": {
     "Planets": {
-
       "Space": {
         "Near": "Near Space",
         "Pact": "Pact Worlds",
@@ -75,32 +74,35 @@
       }
     },
     "Goods": {
-      "Art or antiques  ": "Art or antiques  ",
-      "Base metals ": "Base metals ",
-      "Ceramics or glassware ": "Ceramics or glassware ",
-      "Chemicals ": "Chemicals ",
-      "Furniture ": "Furniture ",
-      "Hides or leather ": "Hides or leather ",
-      "Live animals ": "Live animals ",
+      "Alien items": "Alien items",
+      "Art or antiques": "Art or antiques",
+      "Base metals": "Base metals",
+      "Ceramics or glassware": "Ceramics or glassware",
+      "Chemicals": "Chemicals",
+      "Convicts": "Convicts",
+      "Electronics": "Electronics",
+      "Gemstones": "Gem-Stones",
+      "Furniture": "Furniture",
+      "Hides or leather": "Hides or leather",
+      "Live animals": "Live animals",
+      "Luxuries": "Luxuries",
       "Machinery": "Machinery",
-      "Minerals or byproducts ": "Minerals or byproducts ",
-      "Paper products or books ": "Paper products or books ",
+      "Minerals or byproducts": "Minerals or byproducts",
+      "Narcotics": "Narcotics",
+      "Paper products or books": "Paper products or books",
       "Plastics": "Plastics",
-      "Precision equipment": "Precision equipment",
       "Precious metals": "Precious metals",
+      "Precision equipment": "Precision equipment",
       "Prepared food": "Prepared food",
+      "Radioactives": "Radioactives",
+      "Refugees": "Refugees",
+      "Robots": "Robots",
       "Textiles": "Textiles",
       "Toys or games": "Toys or games",
       "Vegetable products": "Vegetable products",
       "Vehicles": "Vehicles",
       "Weapons or ammo": "Weapons or ammo",
-      "Wood": "Wood",
-      "Radioactives": "Radioactives",
-      "Convicts": "Convicts",
-      "Narcotics": "Narcotics",
-      "Electronics  ": "Electronics  ",
-      "Alien items": "Alien items",
-      "Robots": "Robots"
+      "Wood": "Wood"
     }
   }
 }

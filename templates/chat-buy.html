@@ -1,0 +1,41 @@
+<h3> {{chatMessage}} </h3>
+<table>
+    <tr>
+        <td>
+            Ship
+        </td>
+        <td>
+            <a class="content-link" draggable="true" data-link="" data-uuid="{{purchaseData.ship.uuid}}" data-id="{{purchaseData.ship.uuid}}" data-type="Actor"  data-tooltip="My Ship"><i class="fas fa-medal"></i> {{purchaseData.ship.name}}</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Location
+        </td>
+        <td>
+            <a class="content-link" draggable="true" data-link="" data-uuid="{{purchaseData.planet.uuid}}" data-id="{{purchaseData.planet.id}}" data-type="JournalEntryPage"  data-tooltip="Planet"><i class="fas fa-medal"></i> {{purchaseData.planet.name}}</a>
+        </td>
+    </tr>
+</table>
+
+{{console this}}
+<p style="font-size: 14px;" > Number of Cargo lots +/- {{variation}} </p>
+
+<!-- <a class="content-link" draggable="true" data-link="" data-uuid="Compendium.sfrpg-galactic-trade.galactic-trade.Item.rOCzkgKQO4ubOcld" data-id="rOCzkgKQO4ubOcld" data-type="Journal" data-pack="sfrpg-galactic-trade.galactic-trade" data-tooltip="Feature Item"><i class="fas fa-medal"></i>Galactic Trade</a>
+<a class="content-link" draggable="true" data-link="" data-uuid="JournalEntry.rOCzkgKQO4ubOcld" data-id="rOCzkgKQO4ubOcld" data-type="JournalEntry"  data-tooltip="Feature Item"><i class="fas fa-medal"></i>Galactic Trade2</a>
+-->
+<h3>Suggested Destinations</h3> 
+<table>
+{{#each destsplanetArray as |planet id|}}
+
+    <tr  data-tooltip = "+{{planet.space}}">
+        <td>
+            {{planet.space}}
+        </td>
+        <td>
+            <a class="content-link" draggable="true" data-link="" data-uuid="{{planet.planet.uuid}}" data-id="{{planet.planet.id}}" data-type="JournalEntryPage"  data-tooltip="Feature Item"><i class="fas fa-medal"></i> {{planet.planet.name}}</a>
+        </td>
+       
+    </tr>
+{{/each}}
+</table>

@@ -26,7 +26,6 @@ SFRPG_GT.planets = {
         mobile: "SFRPG_GT.Planets.Space.Mobile",
         drift: "SFRPG_GT.Planets.Space.Drift"
     },
-
     government: {
         anarchy: "SFRPG_GT.Planets.Government.Anarchy",
         feudal: "SFRPG_GT.Planets.Government.Feudal",
@@ -81,7 +80,7 @@ SFRPG_GT.planets = {
         agri: 4,
         penalcolony: 5
     },
-  
+
 
     "biomes": {
         "airborne": "SFRPG_GT.Planets.Biome.Airborne",
@@ -129,27 +128,28 @@ SFRPG_GT.planets = {
 };
 
 SFRPG_GT.goods = {
-
-
     "alienitems": "SFRPG_GT.Goods.Alien items",
-    "artorantiques": "SFRPG_GT.Goods.Art or antiques  ",
-    "basemetals": "SFRPG_GT.Goods.Base metals ",
-    "ceramicsorglassware": "SFRPG_GT.Goods.Ceramics or glassware ",
-    "chemicals": "SFRPG_GT.Goods.Chemicals ",
+    "artorantiques": "SFRPG_GT.Goods.Art or antiques",
+    "basemetals": "SFRPG_GT.Goods.Base metals",
+    "ceramicsorglassware": "SFRPG_GT.Goods.Ceramics or glassware",
+    "chemicals": "SFRPG_GT.Goods.Chemicals",
     "convicts": "SFRPG_GT.Goods.Convicts",
-    "electronics": "SFRPG_GT.Goods.Electronics  ",
-    "furniture": "SFRPG_GT.Goods.Furniture ",
-    "hidesorleather": "SFRPG_GT.Goods.Hides or leather ",
-    "liveanimals": "SFRPG_GT.Goods.Live animals ",
+    "electronics": "SFRPG_GT.Goods.Electronics",
+    "gemstones": "SFRPG_GT.Goods.Gemstones",
+    "furniture": "SFRPG_GT.Goods.Furniture",
+    "hidesorleather": "SFRPG_GT.Goods.Hides or leather",
+    "liveanimals": "SFRPG_GT.Goods.Live animals",
+    "luxuries": "SFRPG_GT.Goods.Luxuries",
     "machinery": "SFRPG_GT.Goods.Machinery",
-    "mineralsorbyproducts": "SFRPG_GT.Goods.Minerals or byproducts ",
+    "mineralsorbyproducts": "SFRPG_GT.Goods.Minerals or byproducts",
     "narcotics": "SFRPG_GT.Goods.Narcotics",
-    "paperproductsorbooks": "SFRPG_GT.Goods.Paper products or books ",
+    "paperproductsorbooks": "SFRPG_GT.Goods.Paper products or books",
     "plastics": "SFRPG_GT.Goods.Plastics",
     "precisionequipment": "SFRPG_GT.Goods.Precision equipment",
     "preciousmetals": "SFRPG_GT.Goods.Precious metals",
     "preparedfood": "SFRPG_GT.Goods.Prepared food",
     "radioactives": "SFRPG_GT.Goods.Radioactives",
+    "refugees": "SFRPG_GT.Goods.Refugees",
     "robots": "SFRPG_GT.Goods.Robots",
     "textiles": "SFRPG_GT.Goods.Textiles",
     "toysorgames": "SFRPG_GT.Goods.Toys or games",
@@ -157,6 +157,7 @@ SFRPG_GT.goods = {
     "vehicles": "SFRPG_GT.Goods.Vehicles",
     "weaponsorammo": "SFRPG_GT.Goods.Weapons or ammo",
     "wood": "SFRPG_GT.Goods.Wood"
+
 
 }
 // n^F - 1
@@ -167,33 +168,43 @@ SFRPG_GT.trade = {
 
 
 }
+SFRPG_GT.goodsTypeData = {
+    luxuries : 20,
+    tech : 10,
+    minerals : 0,
+    organics : -7,
+    sentient  : -15
+}
+
+
+
 SFRPG_GT.goodsData = {
-    alienitems :{ basePrice : 53, baseQuantity : 70, economicFactor : 15, priceStability : 7},
-    artorantiques :{ basePrice : 196, baseQuantity : 54, economicFactor : 8, priceStability : 15},
-    basemetals :{ basePrice : 52, baseQuantity : 17, economicFactor : 1, priceStability : 31},
-    ceramicsorglassware :{ basePrice : 125, baseQuantity : 25, economicFactor : 8, priceStability : 31},
-    chemicals :{ basePrice : 65, baseQuantity : 13, economicFactor : -3, priceStability : 7},
-    convicts :{ basePrice : 40, baseQuantity : 100, economicFactor : 4, priceStability : 31},
-    electronics :{ basePrice : 154, baseQuantity : 56, economicFactor : 14, priceStability : 15},
-    furniture :{ basePrice : 114, baseQuantity : 110, economicFactor : 8, priceStability : 7},
-    hidesorleather :{ basePrice : 82, baseQuantity : 90, economicFactor : -7, priceStability : 63},
-    liveanimals :{ basePrice : 176, baseQuantity : 220, economicFactor : -9, priceStability : 63},
-    machinery :{ basePrice : 117, baseQuantity : 40, economicFactor : 6, priceStability : 7},
-    mineralsorbyproducts :{ basePrice : 32, baseQuantity : 53, economicFactor : -1, priceStability : 3},
-    narcotics :{ basePrice : 235, baseQuantity : 8, economicFactor : 29, priceStability : 127},
-    paperproductsorbooks :{ basePrice : 30, baseQuantity : 12, economicFactor : -3, priceStability : 3},
-    plastics :{ basePrice : 78, baseQuantity : 17, economicFactor : 5, priceStability : 31},
-    preciousmetals :{ basePrice : 97, baseQuantity : 66, economicFactor : -1, priceStability : 7},
-    precisionequipment :{ basePrice : 179, baseQuantity : 56, economicFactor : 14, priceStability : 3},
-    preparedfood :{ basePrice : 19, baseQuantity : 6, economicFactor : -2, priceStability : 1},
-    radioactives :{ basePrice : 85, baseQuantity : 6, economicFactor : -3, priceStability : 15},
-    robots :{ basePrice : 171, baseQuantity : 50, economicFactor : 8, priceStability : 15},
-    textiles :{ basePrice : 20, baseQuantity : 10, economicFactor : -1, priceStability : 7},
-    toysorgames :{ basePrice : 116, baseQuantity : 38, economicFactor : 14, priceStability : 15},
-    vegetableproducts :{ basePrice : 83, baseQuantity : 60, economicFactor : -5, priceStability : 15},
-    vehicles :{ basePrice : 132, baseQuantity : 25, economicFactor : 6, priceStability : 7},
-    weaponsorammo :{ basePrice : 124, baseQuantity : 29, economicFactor : 13, priceStability : 7},
-    wood :{ basePrice : 30, baseQuantity : 10, economicFactor : -3, priceStability : 3},
-    
-   
+    alienitems: { basePrice: 350, baseQuantity: 70, economicFactor: 25, priceStability: 31, type: "luxuries" },
+    artorantiques: { basePrice: 83, baseQuantity: 54, economicFactor: 8, priceStability: 15, type: "luxuries" },
+    basemetals: { basePrice: 78, baseQuantity: 17, economicFactor: 1, priceStability: 31, type: "minerals" },
+    ceramicsorglassware: { basePrice: 125, baseQuantity: 25, economicFactor: 8, priceStability: 31, type: "minerals" },
+    chemicals: { basePrice: 83, baseQuantity: 251, economicFactor: -5, priceStability: 15, type: "minerals" },
+    convicts: { basePrice: 40, baseQuantity: 100, economicFactor: -5, priceStability: 31, type: "sentient" },
+    electronics: { basePrice: 154, baseQuantity: 56, economicFactor: 14, priceStability: 3, type: "tech" },
+    gemstones: { basePrice: 45, baseQuantity: 250, economicFactor: -2, priceStability: 15, type: "minerals" },
+    hidesorleather: { basePrice: 176, baseQuantity: 220, economicFactor: -9, priceStability: 63, type: "organics" },
+    liveanimals: { basePrice: 130, baseQuantity: 90, economicFactor: -7, priceStability: 63, type: "organics" },
+    luxuries: { basePrice: 196, baseQuantity: 54, economicFactor: 8, priceStability: 3, type: "luxuries" },
+    machinery: { basePrice: 117, baseQuantity: 40, economicFactor: 6, priceStability: 7, type: "tech" },
+    mineralsorbyproducts: { basePrice: 32, baseQuantity: 53, economicFactor: -1, priceStability: 3, type: "minerals" },
+    narcotics: { basePrice: 235, baseQuantity: 8, economicFactor: 29, priceStability: 120, type: "luxuries" },
+    plastics: { basePrice: 60, baseQuantity: 17, economicFactor: 5, priceStability: 31, type: "organics" },
+    preciousmetals: { basePrice: 97, baseQuantity: 66, economicFactor: -1, priceStability: 7, type: "minerals" },
+    precisionequipment: { basePrice: 171, baseQuantity: 55, economicFactor: -2, priceStability: 31, type: "tech" },
+    preparedfood: { basePrice: 19, baseQuantity: 6, economicFactor: -2, priceStability: 1, type: "organics" },
+    radioactives: { basePrice: 65, baseQuantity: 2, economicFactor: -3, priceStability: 7, type: "tech" },
+    refugees: { basePrice: 90, baseQuantity: 130, economicFactor: -5, priceStability: 31, type: "sentient" },
+    robots: { basePrice: 171, baseQuantity: 50, economicFactor: 8, priceStability: 15, type: "sentient" },
+    textiles: { basePrice: 20, baseQuantity: 10, economicFactor: -1, priceStability: 3, type: "organics" },
+    vegetableproducts: { basePrice: 83, baseQuantity: 60, economicFactor: -5, priceStability: 15, type: "organics" },
+    vehicles: { basePrice: 132, baseQuantity: 25, economicFactor: 6, priceStability: 7, type: "tech" },
+    weaponsorammo: { basePrice: 124, baseQuantity: 29, economicFactor: 13, priceStability: 7, type: "tech" }
+
+
+
 }

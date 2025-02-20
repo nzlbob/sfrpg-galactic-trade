@@ -1,23 +1,48 @@
 {
-    "id": "sfrpg-galactic-trade",
-    "title": "Starfinder Galactic Trade",
-    "description": "Test",
-    "authors": [
-      {
-      "name": "bob"
-      }
+  "id": "sfrpg-galactic-trade",
+  "title": "Starfinder Galactic Trade",
+  "description": "Test",
+  "authors": [
+    {
+      "name": "bob",
+      "flags": {}
+    }
+  ],
+  "version": "0.24",
+  "compatibility": {
+    "minimum": "10",
+    "verified": "12",
+    "maximum": "12"
+  },
+  "esmodules": [
+    "galacticTrade.js"
+  ],
+  
+  "packFolders": [
+    {
+      "name": "Galactic Trade",
+      "packs": [
+        "galactic-trade",
+        "galactic-trade-macros",
+        "galactic-trade-rolltables"
       ],
-    "version": "0.22",
-    "compatibility": {
-      "minimum": "10",
-      "verified": "12",
-      "maximum":12
-    },
-    "esmodules": [
-      "galacticTrade.js"
-     
+      "color": "#19d6b7"
+    }
   ],
   "packs": [
+    {
+      "label": "Galactic Trade",
+      "type": "JournalEntry",
+      "name": "galactic-trade",
+      "path": "packs/journal",
+      "system": "sfrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "banner": "modules/sfrpg-galactic-trade/images/solarsystems/pactWorlds.webp"
+    },
     {
       "label": "Galactic Trade Macros",
       "type": "Macro",
@@ -29,13 +54,7 @@
         "ASSISTANT": "OWNER"
       },
       "flags": {},
-      "package": "world",
-      "id": "sfrpg-galactic-trade.galactic-trade-macros",
-      "packageType": "world",
-      "packageName": "galactic-trade",
-      "index": [],
-      "folders": [],
-      "banner" : "modules/sfrpg-galactic-trade/images/solarsystems/pactWorlds.webp"
+      "banner": "modules/sfrpg-galactic-trade/images/solarsystems/pactWorlds.webp"
     },
     {
       "label": "Galactic Trade Roll Tables",
@@ -48,73 +67,72 @@
         "ASSISTANT": "OWNER"
       },
       "flags": {},
-      "package": "world",
-      "id": "sfrpg-galactic-trade.galactic-trade-rolltables",
-      "packageType": "world",
-      "packageName": "galactic-trade",
-      "index": [],
-      "folders": [],
-      "banner" : "modules/sfrpg-galactic-trade/images/solarsystems/pactWorlds.webp"
+      "banner": "modules/sfrpg-galactic-trade/images/solarsystems/pactWorlds.webp"
     }
   ],
-
-  "languages": [{
-    "lang": "en",
-    "name": "English",
-    "path": "lang/en.json"
-  }],
-
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
   "styles": [
     "styles/galactic-trade.css"
   ],
-
   "documentTypes": {
-
-      "JournalEntryPage": {
-        "planet": {
+    "JournalEntryPage": {
+      "planet": {
         "filePathField": {
-          "src": ["images"]}
+          "src": [
+            "images"
+          ]
         }
       }
-
+    }
   },
-
-
-    "relationships": {
-        "systems": [{
-          "id": "sfrpg",
-          "type": "system",
-          "manifest": "",
-          "compatibility": {
-            "verified": "0.0.0"
-          }
-        }],
-        "recommends": [
-          {
-              "id": "foundryvtt-simple-calendar",
-              "type": "module",
-              "manifest": "https://github.com/vigoren/foundryvtt-simple-calendar/releases/latest/download/module.json"
-          }
-      ]
-      },
-      "url": "https://github.com/nzlbob/sfrpg-galactic-trade",
-      "manifest": "https://raw.githubusercontent.com/nzlbob/sfrpg-galactic-trade/refs/heads/main/module.json",
-      "download": "https://github.com/nzlbob/sfrpg-galactic-trade/archive/refs/heads/main.zip",
-      "media": [
+  "relationships": {
+    "systems": [
+      {
+        "id": "sfrpg",
+        "type": "system",
+        "compatibility": {
+          "verified": "0.0.0"
+        }
+      }
+    ],
+    "recommends": [
+      {
+        "id": "foundryvtt-simple-calendar",
+        "type": "module",
+        "manifest": "https://github.com/vigoren/foundryvtt-simple-calendar/releases/latest/download/module.json",
+        "compatibility": {}
+      }
+    ]
+  },
+  "url": "https://github.com/nzlbob/sfrpg-galactic-trade",
+  "manifest": "https://raw.githubusercontent.com/nzlbob/sfrpg-galactic-trade/refs/heads/main/module.json",
+  "download": "https://github.com/nzlbob/sfrpg-galactic-trade/archive/refs/heads/main.zip",
+  "media": [
     {
       "type": "thumbnail",
-      "url": "systems/Alternityd100/images/VTTlogo3.png",
-      "name": "Starfinder Galactic Trade"
+      "url": "modules/sfrpg-galactic-trade/images/galactic-trade.webp",
+      "loop": false,
+      "flags": {}
     },
     {
       "type": "setup",
-      "url": "systems/Alternityd100/images/VTTlogo3.png",
-      "name": "Starfinder Galactic Trade"
+      "url": "modules/sfrpg-galactic-trade/images/galactic-trade.webp",
+      "loop": false,
+      "flags": {}
     },
     {
       "type": "cover",
-      "url": "https://raw.githubusercontent.com/nzlbob/Alternityd100/main/images/VTTlogo3.png",
-      "caption": "Starfinder Galactic Trade"
+      "url": "https://raw.githubusercontent.com/nzlbob/sfrpg-galactic-trade/main/images/galactic-trade.webp",
+      "caption": "Starfinder Galactic Trade",
+      "loop": false,
+      "flags": {}
     }
   ]
-  }
+}

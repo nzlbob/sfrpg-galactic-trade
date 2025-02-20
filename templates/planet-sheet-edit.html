@@ -39,8 +39,13 @@
                 button=true
                 editable=editable
             }] -->
+            {{#if enhanced}}
+            {{> "modules/sfrpg-galactic-trade/templates/planet-biography-enhanced.html" edit=true hideVitals=false}}
 
-            {{> "modules/sfrpg-galactic-trade/templates/planet-biography.html" hideVitals=false}}
+            {{else}}
+  
+            {{> "modules/sfrpg-galactic-trade/templates/planet-biography.html" edit=true hideVitals=false}}
+            {{/if}}
         </div>
 
         
@@ -112,7 +117,7 @@
                     </tr>
                 </thead>
                 {{#each document.system.trade.goods as |category id|}}
-                <tr  data-tooltip = "Hello {{category.tooltip}}">
+                <tr  data-tooltip = "{{category.tooltip}}">
                    <!--console category--> 
                     <td>
                         {{localize (tradelookup ../config.goods id "")}}

@@ -3,11 +3,16 @@
         <label>{{localize "Cargo Type"}}</label>
         <label>{{name}}</label>
     </div>
+    <div class="form-group">
+        <label>{{localize "Price"}}</label>
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="price" value="{{goods.price}}" />
+    </div>
+    <div class="form-group">
+        <label>{{localize "Quantity"}}</label>
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="qty" value="{{goods.quantity}}" />
+    </div>
 {{console this}}
-<div class="form-group stacked doubleFlex" data-tooltip="<strong>{{localize 'Year Length (in standard days)'}}</strong><br>@details.yearLength">
-    <label class="singleLine">{{localize "Quantity"}}</label>
-    <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="qty" value=6 placeholder="{{localize 'SFRPG.ActorSheet.Biography.DateOfBirthPlaceholder'}}" />
-</div>
+
 </form>
 
 

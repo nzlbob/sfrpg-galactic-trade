@@ -13,6 +13,7 @@ export const preloadHandlebarsTemplates = async function() {
   
   // Actor Sheet Partials
   "modules/sfrpg-galactic-trade/templates/planet-biography.html",
+  "modules/sfrpg-galactic-trade/templates/planet-biography-enhanced.html",
     // Load the template parts
 
 ];

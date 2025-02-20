@@ -34,23 +34,36 @@
     </nav>
 
 
-
-
-
     <section class="new-body">
         <div class="tab flexrow" data-group="newTabs" data-tab="details">
-            {{> "modules/sfrpg-galactic-trade/templates/planet-biography.html" hideVitals=false locksheet=true}}
+            {{#if enhanced}}
+
+            {{> "modules/sfrpg-galactic-trade/templates/planet-biography-enhanced.html"  hideVitals=false}}
+
+            {{else}}
+
+            {{> "modules/sfrpg-galactic-trade/templates/planet-biography.html" hideVitals=false}}
+            {{/if}}
         </div>
       
         <div class="tab flexrow" data-group="newTabs" style="flex: 0 0 100% " data-tab="stuff">
-
-
                 <table>
                     <thead>
                         <tr>
-                            <th colspan="11">
+                            <th colspan="5">
                                 Trade Data as at {{tradeDataDate.date}} 
                             </th>
+                            <th colspan="2">
+
+
+                            </th>
+
+
+                            {{#if isGM}}
+                            <th colspan="4">
+                                <input   type = "button" value = "Update Prices" class="recalculatetrade" data-id="{{document.id}}">
+                            </th>
+                            {{/if}}
                         </tr>
                         <tr>
                             <th rowspan="2">
@@ -65,13 +78,16 @@
                             <th colspan="2">
                                 Trade
                             </th>       
+                            {{#if isGM}}
                             <th colspan="2">
                                 Trade
                             </th>  
                             <th colspan="2">
                                 Illegal Trade
                             </th>      
+                            {{/if}}
                         </tr>
+                       
                         <tr>
                             <th>
                                 kCr
@@ -91,6 +107,7 @@
                             <th>
                                 Sell
                             </th>
+                            {{#if isGM}}
                             <th>
                                 Buy
                             </th>
@@ -103,15 +120,16 @@
                             <th>
                                 Sell
                             </th>
+                            {{/if}}
                         </tr>
                     </thead>
                     {{#each document.system.trade.goods as |category id|}}
-                    <tr  data-tooltip = "Hello {{category.tooltip}}">
+                    <tr  data-tooltip = "{{category.tooltip}}" {{#if (eq category.color "red" )}} style="background-color: rgb(191, 243, 198) ;" {{/if}} {{#if (eq category.color "green" )}} style="background-color: rgb(255, 208, 208) ;" {{/if}}>
                        <!--console category--> 
                         <td>
                             {{localize (tradelookup ../config.goods id "")}}
                         </td>
-                        <td>
+                        <td  >
                             {{category.price}}
                         </td>
                         <td>
@@ -124,23 +142,25 @@
                             {{category.lots}}
                         </td>
                         <td>
-                            <input   type = "button" value = "Buy" class="buy" data-id="{{id}}" data-location="{{../document.uuid}}">
+                            <input {{#if (and   (not noBuy)  (not illegalBuy)  )}}  disabled {{/if}} {{#if illegalBuy}} style="background-color: crimson;" {{/if}} type = "button" value = "Buy" class="buy" data-id="{{id}}" data-location="{{../document.uuid}}">
                         </td>
                         <td>
-                           <input type = "button" value = "Sell" class="sell" data-id="{{id}}">
+                           <input input {{#if (and   (not noSell)  (not illegalSell)  )}}  disabled {{/if}} {{#if illegalSell}} style="background-color: crimson;" {{/if}}type = "button" value = "Sell" class="sell" data-id="{{id}}">
+                        </td>
+                        {{#if ../isGM}}
+                        <td>
+                            <input name= "system.trade.goods.{{id}}.noBuy" {{checked noBuy }} type = "checkbox"  class="TradeBuy" data-id="{{id}}">
                         </td>
                         <td>
-                            <input name= "system.trade.goods.{{id}}.noBuy" {{checked (tradelookup ../document.system.trade.goods id "noBuy")}} type = "checkbox"  class="TradeBuy" data-id="{{id}}">
+                           <input name= "system.trade.goods.{{id}}.noSell" {{checked noSell}} type = "checkbox"  class="TradeSell" data-id="{{id}}">
                         </td>
                         <td>
-                           <input name= "system.trade.goods.{{id}}.noSell" {{checked (tradelookup ../document.system.trade.goods id "noSell")}} type = "checkbox"  class="TradeSell" data-id="{{id}}">
+                            <input name= "system.trade.goods.{{id}}.illegalBuy"  {{checked illegalBuy}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
                         </td>
                         <td>
-                            <input name= "system.trade.goods.{{id}}.illegalBuy"  {{checked (tradelookup ../document.system.trade.goods id "illegalBuy")}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
+                           <input name= "system.trade.goods.{{id}}.illegalSell"  {{checked illegalSell}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
                         </td>
-                        <td>
-                           <input name= "system.trade.goods.{{id}}.illegalSell"  {{checked (tradelookup ../document.system.trade.goods id "illegalSell")}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
-                        </td>
+                        {{/if}}
                     </tr>
                     {{/each}}
                 </table>
