@@ -1,0 +1,97 @@
+{{console this}}
+{{#if buy}}
+<h3> Notice of consignment </h3>
+{{/if}} 
+{{#if sell}}
+<h3> Notice of delivery </h3>
+{{/if}}
+
+<table>
+    <tr>
+        <th>
+            Goods
+        </th>
+        <th colspan="2">
+            {{name}}
+        </th>
+    </tr>
+    <tr>
+        <td>
+            Ship
+        </td>
+        <td colspan="2">
+            <a class="content-link" draggable="true" data-link="" data-uuid="{{myShip.uuid}}" data-id="{{myShip.uuid}}" data-type="Actor"  data-tooltip="My Ship"><i class="fas fa-medal"></i> {{myShip.name}}</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Location
+        </td>
+        <td colspan="2">
+            <a class="content-link" draggable="true" data-link="" data-uuid="{{planet.uuid}}" data-id="{{planet.id}}" data-type="JournalEntryPage"  data-tooltip="Planet"><i class="fas fa-medal"></i> {{planet.name}}</a>
+        </td>
+    </tr>
+    <tr>
+        <th>
+           
+        </th>
+        <th style="text-align: center;" >
+           eCr / tons
+        </th>
+        <th style="text-align: center;">
+           BP / Lots
+         </th>
+    </tr>
+    <tr>
+        <td>
+            Price
+        </td>
+        <td style="text-align: center;">
+           {{createData.price}}
+        </td>
+        <td style="text-align: center;">
+            {{createData.bp}}
+         </td>
+    </tr>
+    <tr>
+        <td>
+            Qty
+        </td>
+        <td style="text-align: center;">
+            {{createData.qty}}
+        </td>
+        <td style="text-align: center;">
+            {{createData.lots}}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Total
+        </td>
+        <td style="text-align: center;">
+            {{createData.total.eCr}}
+        </td>
+        <td style="text-align: center;">
+            {{createData.total.bp}}
+        </td>
+    </tr>
+
+
+    
+</table>
+{{#if buy}}
+{{#if success}}
+<p>Your great negotiating skills (DC {{dc}}) found the opportunity to buy {{variation}} additional lot(s).</p>
+{{/if}}
+<p>{{name}} have been consigned to your ship, {{createData.total.bp}} BP has been direct debited from the {{myShip.name}} trading  account.</p>
+{{/if}}
+{{#if sell}}
+{{#if success}}
+<p>Your great negotiating skills (DC {{dc}}) found the opportunity to sell at {{variation}}% higher price.</p>
+{{/if}}
+<p>Trade goods have been delivered to the buyer, {{createData.total.bp}} BP has been deposited to the {{myShip.name}} trading account.</p>
+{{/if}}
+<p>Balance: {{createData.balance.bp}} BP. ( {{createData.balance.eCr}} eCr)</p>
+<p>May Abadar bring you good fortune.</p>
+
+

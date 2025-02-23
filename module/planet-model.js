@@ -2,8 +2,6 @@ import { SFRPG_GT } from "./config.js";
 
 
 export class PlanetModel extends foundry.abstract.TypeDataModel {
-
-
   static defineSchema() {
     const fields = foundry.data.fields;
     return {
@@ -14,26 +12,24 @@ export class PlanetModel extends foundry.abstract.TypeDataModel {
       img: new fields.FilePathField({ required: false, categories: ["IMAGE"] }),
       steps: new fields.ArrayField(new fields.StringField({ blank: true })),
       attributes: new fields.SchemaField({
-        population: new fields.NumberField({ required: false, nullable: false, integer: true, min: 1, max: 200,initial: 20 }),
+        population: new fields.NumberField({ required: false, nullable: false, integer: true, min: 1, max: 200, initial: 20 }),
 
         economy: new fields.SchemaField({
-          affluence: new fields.StringField({ required:  true, initial: "average" }),
+          affluence: new fields.StringField({ required: true, initial: "average" }),
           productionType: new fields.StringField({ required: true, initial: "indagri" }),
           government: new fields.StringField({ required: true, initial: "dictatorship" }),
-          minerals: new fields.NumberField({ required: true, integer: true, min:0 , max: 200, initial: 100 }),
+          minerals: new fields.NumberField({ required: true, integer: true, min: 0, max: 200, initial: 100 }),
           sentient: new fields.NumberField({ required: true, integer: true, min: 0, max: 200, initial: 100 }),
-          tech: new fields.NumberField({ required: true, integer: true, min: 0,max: 200, initial: 100 }),
-          organics: new fields.NumberField({ required: true, integer: true, min: 0,max: 200, initial: 100 }),
-          luxuries: new fields.NumberField({ required: true, integer: true, min: 0,max: 200, initial: 100 }),
+          tech: new fields.NumberField({ required: true, integer: true, min: 0, max: 200, initial: 100 }),
+          organics: new fields.NumberField({ required: true, integer: true, min: 0, max: 200, initial: 100 }),
+          luxuries: new fields.NumberField({ required: true, integer: true, min: 0, max: 200, initial: 100 }),
           base: new fields.NumberField({ required: false }),
           bonus: new fields.NumberField({ required: false }),
           value: new fields.NumberField({ required: false }),
           technology: new fields.StringField({ required: false }),
           productivity: new fields.StringField({ required: false }),
-          tradehub: new fields.NumberField({ required: true, integer: true, min:0 , max: 100, initial: 0 }),
+          tradehub: new fields.NumberField({ required: true, integer: true, min: 0, max: 100, initial: 0 }),
         }),
-
-
       }),
 
       trade: new fields.ObjectField(),
@@ -94,81 +90,77 @@ export class PlanetModel extends foundry.abstract.TypeDataModel {
     const trade = foundry.utils.duplicate(this.trade)
     console.log(trade)
     const newGoods = {}
-
-
-
     for (const [k, v] of Object.entries(SFRPG_GT.goodsData)) {
-
       newGoods[k] = { price: 10, quantity: 10, tooltip: "", noBuy: true, noSell: true, illegalBuy: false, illegalSell: false }
       console.log(newGoods, k, v)
     }
     trade.goods = newGoods
     trade.cycle = { initial: Math.random(), factor: 0 }
     trade.tradeDataDate = 0
-
     if (game.modules.get("foundryvtt-simple-calendar")?.active) trade.tradeDataDate = SimpleCalendar.api.timestamp
     //ToDate(SimpleCalendar.instance.currentDate)
     console.log(trade.goods)
     this.updateSource({ "trade": trade })
-
-
   }
 
-
+  /**
+ * 
+ * @param {*} data
+ */
   prepareDerivedData() {
- //   console.log("prepareDerivedData")
+    //   console.log("prepareDerivedData")
     const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue")
 
-  //  console.log(this)
+    //  console.log(this)
     // this.nSteps = this.steps.length;
     const newGoods = this.trade.goods
     for (const [k, v] of Object.entries(newGoods)) {
-    if (!SFRPG_GT.goodsData[k]) {delete  newGoods[k];continue} 
-    const averageGalacticPrice =  this.averageGalacticPrice(k)
-    v.bp = Math.round(v.price / BPValue * 100000) / 100
-    v.lots = Math.max(Math.round(v.quantity / 25 * 100) / 100, 0)
-    v.saleValue = Math.round(v.bp * v.lots * 100) / 100
-    v.tooltip = "Trade Total = " + (v.saleValue) + " BP <br> Average Galactic Price = " + averageGalacticPrice + " kCr"
-    v.color = ""
-    const colorband = 1.2
-    if (v.price > (averageGalacticPrice * colorband)) v.color = "red"
-    if (v.price < (averageGalacticPrice / colorband)) v.color = "green"
+      if (!SFRPG_GT.goodsData[k]) { delete newGoods[k]; continue }
+      const averageGalacticPrice = this.averageGalacticPrice(k)
+      v.bp = Math.round(v.price / BPValue * 100) / 100
+      v.lots = Math.max(Math.round(v.quantity / 25 * 100) / 100, 0)
+      v.saleValue = Math.round(v.bp * v.lots * 100) / 100
+      v.tooltip = "Trade Total = " + (v.saleValue) + " BP <br> Average Galactic Price = " + averageGalacticPrice + " eCr"
+      v.color = ""
+      const colorband = 1.2
+      if (v.price > (averageGalacticPrice * colorband)) v.color = "red"
+      if (v.price < (averageGalacticPrice / colorband)) v.color = "green"
     }
-
-
-
-
-
   }
-
-   averageGalacticPrice(good){
-    const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis")==="enhanced"? true : false ;
+/**
+ * 
+ * @param {*} good 
+ * @returns 
+ */
+  averageGalacticPrice(good) {
+    const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis") === "enhanced" ? true : false;
     const maxEconomyValue = game.settings.get("sfrpg-galactic-trade", "maxEconomyValue")
     const seasonFactor = game.settings.get("sfrpg-galactic-trade", "seasonFactor")
     const goodsData = SFRPG_GT.goodsData[good]
     const goodType = SFRPG_GT.goodsData[good].type
-    const typefactor = SFRPG_GT.goodsTypeData[goodType]/100
+    const typefactor = SFRPG_GT.goodsTypeData[goodType] / 100
 
-      // av price = basePrice + stability/2  + season /2  +  econimy factor /2    goodsData.economicFactor * economyFactor 
+    // av price = basePrice + stability/2  + season /2  +  econimy factor /2    goodsData.economicFactor * economyFactor 
 
-      let averageGalacticPrice = 0
-if(enhanced){
-  averageGalacticPrice = Math.floor(((goodsData.basePrice + goodsData.priceStability/2 +  goodsData.priceStability/2 * seasonFactor   + (goodsData.basePrice * typefactor * 2 ) + (goodsData.basePrice * 0.3 )) * 4)) / 10
-}
-else{
-      averageGalacticPrice = Math.floor(((goodsData.basePrice + goodsData.priceStability/2 +  goodsData.priceStability/2 * seasonFactor   + goodsData.economicFactor * maxEconomyValue / 2) * 4)) / 10
-}   
-     
-     
-      return averageGalacticPrice
+    let averageGalacticPrice = 0
+    if (enhanced) {
+      averageGalacticPrice = Math.floor(((goodsData.basePrice + goodsData.priceStability / 2 + goodsData.priceStability / 2 * seasonFactor + (goodsData.basePrice * typefactor * 2) + (goodsData.basePrice * 0.3)) * 4)) / 10
+    }
+    else {
+      averageGalacticPrice = Math.floor(((goodsData.basePrice + goodsData.priceStability / 2 + goodsData.priceStability / 2 * seasonFactor + goodsData.economicFactor * maxEconomyValue / 2) * 4)) / 10
     }
 
 
+    return averageGalacticPrice
+  }
+
+
 }
-
-
-
-
+/**
+ * 
+ * @param {*} good
+ * @returns 
+ */
 export class PlanetSheet extends JournalTextPageSheet {
   get template() {
     return `modules/sfrpg-galactic-trade/templates/planet-sheet-${this.isEditable ? "edit" : "view"}.html`;
@@ -233,8 +225,8 @@ export class PlanetSheet extends JournalTextPageSheet {
       context.myShipLoc = myShipLoc == this.object.uuid
       context.currentLoc = myShipLoc == this.object.uuid
       context.tradeDataDate = tradeDataDate
-      context.enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis")==="enhanced"? true : false ;
- 
+      context.enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis") === "enhanced" ? true : false;
+
     }
     return context;
   }
@@ -245,43 +237,226 @@ export class PlanetSheet extends JournalTextPageSheet {
    * @param {JQuery} html The prepared HTML object ready to be rendered into the DOM
    */
   activateListeners(html) {
-   // console.log("HERE--",html)
+    // console.log("HERE--",html)
     super.activateListeners(html);
 
     html.find('.clickpingtoken').click(event => this.xrecalculateTrade(event));
     html.find('.updateeconomy').change(event => this.recalculateTrade(event));
     html.find('.buy').click(event => this._onItemCreate3(event));
+    html.find('.sell').click(event => this._onItemSell(event));
     html.find('.recalculatetrade').click(event => this.recalculateTrade(event));
     html.find('.setcurrentlocation').click(event => this.setcurrentlocation(event));
-   // html.on('change', '.slider', this._onchangeSlider.bind(this));
-   //html.find('.slider').change(event => this._onchangeSlider(event));
-   
+    html.find('.rolldip').click(event => this.rolldip(event));
 
+    //class="rolldip"
+    // html.on('change', '.slider', this._onchangeSlider.bind(this));
+    //html.find('.slider').change(event => this._onchangeSlider(event));
+  }
+
+  async _onItemSell(event) {
+    console.log(this)
+    event.preventDefault();
+    const systemData = this.object.system
+    const header = event.currentTarget;
+    const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
+    const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue") ?? 25;
+    const myShip = await game.actors.directory.documents.find((actor) => actor.uuid === currentStarship)
+    if (!myShip) { return ui.notifications.warn(game.i18n.format("No Trading ship selected in Configure Game Settings")) }
+    const dataset = header.dataset;
+    const token = game.canvas.tokens.controlled[0]
+    console.log(token)
+    if (!token) return ui.notifications.warn(game.i18n.format("No Actor Token Selected"));
+    const actor = token.actor
+    if (actor.type == "starship") return ui.notifications.warn(game.i18n.format("No Character with skills selected"));
+    const allskills = actor.system.skills
+    let skillToUse = "dip" // use merchant if greater
+    for (let [k, v] of Object.entries(allskills)) {
+      if (v.subname?.toLowerCase() === "merchant") {
+        if (v.mod > allskills.dip.mod) skillToUse = k
+      }
+    }
+
+
+    const roll = await actor.rollSkill(skillToUse)
+    const result = roll.callbackResult.total
+    const charLevel = actor.system.details.level.value
+    let dc = 25 + Math.floor(charLevel * 1.5)
+
+    if (systemData.trade.goods[dataset.id].quantity === 0) dc = 15 + Math.floor(charLevel * 1.5);
+    let success = false
+    let sellPrice = 0
+    console.log(dc, result)
+    let variation = 0
+    if (result < dc) { success = false }
+    else {
+      variation = 1 + Math.floor(result - dc);
+      success = true
+    }
+    console.log(myShip)
+    console.log(myShip.items.contents)
+    let totalTons = 0
+const goodsItems = myShip.items.contents.filter((item) => {
+  console.log(item)
+ // myShip.deleteEmbeddedDocuments("Item", [item.id])
+ if((item.type === "goods") && (item.flags.SFRPG_GT?.type === dataset.id)) 
+ {
+  totalTons += item.flags.SFRPG_GT.qty
+  return true
+ }
+
+})
+    console.log(goodsItems)
+    
+//console.log(header.dataset, this)
+const date = this.object.system.trade.tradeDataDate
+const parsedDate = SimpleCalendar.api.formatTimestamp(date)
+const goods = foundry.utils.duplicate(this.object.system.trade.goods[dataset.id])
+goods.price = Math.round(goods.price * (1 + (variation / 100)) * 10) / 10
+goods.quantity = totalTons
+let createData = {
+  name: game.i18n.localize(SFRPG_GT.goods[dataset.id]),
+  type: "goods",
+  qty: 0
+};
+let templateData = { sell: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
+console.log(createData, templateData)
+const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
+
+new Dialog({
+  title: game.i18n.format("Sell Items "),
+  content: dlg,
+  buttons: {
+    create: {
+      icon: '<i class="fas fa-check"></i>',
+      label: game.i18n.format("Sell Items"),
+      callback: html => {
+        const form = html[0].querySelector("form");
+        let formDataExtended = new FormDataExtended(form);
+        // console.log(formDataExtended,html)
+        foundry.utils.mergeObject(createData, formDataExtended.object);
+
+        console.log(createData)
+        //this.onBeforeCreateNewItem(createData);
+        createData.lots = Math.round(createData.qty / 25 * 100) / 100
+        createData.bp = Math.round(createData.price / BPValue * 100) / 100
+        templateData.total = { eCr: Math.round(createData.qty * goods.price * 100) / 100, bp: Math.round(createData.lots * createData.bp * 100) / 100 }
+        createData.total =  templateData.total
+        createData.balance = {bp: Math.round((myShip.system.currency.bp + createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp + createData.total.bp) * BPValue * 100) / 100}
+        renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then((cargoDesc) => {
+          const itemData = {
+            name: createData.qty + " tons of " + createData.name,
+            type: createData.type,
+            flags: { SFRPG_GT: { type: dataset.id, qty: createData.qty, goods: goods } },
+            system: {
+              description: { value: cargoDesc, gmNotes: "Bad thing happen" },
+              //description: { value: "This is " + createData.qty + " tons of " + createData.name + "purchased from " + this.object.name + " for " + createData.price + " BP / lot",short:dlg },
+
+              bulk: createData.qty + " tons",
+              price: createData.price,
+            }
+          };
+          //saleValue = templateData.total.bp
+
+          let sellQty = createData.qty
+          goodsItems.forEach((item) => {
+            if (sellQty >= item.flags.SFRPG_GT.qty) {
+              sellQty -= item.flags.SFRPG_GT.qty
+            myShip.deleteEmbeddedDocuments("Item", [item.id])
+            }
+            else {
+              const remainingqty = item.flags.SFRPG_GT.qty - sellQty
+              const update = {
+                                _id : item.id,
+                flags: {SFRPG_GT : {qty  : remainingqty}},
+                name : remainingqty + " tons of " + templateData.name,
+                system : {bulk : remainingqty + " tons",
+                  quantity : Math.round( remainingqty / BPValue * 100 ) / 100 
+                }
+              }
+              console.log (item)
+              console.log (myShip.updateEmbeddedDocuments("Item", [update]))
+              
+              sellQty = 0
+            }
+          });
+
+          //myShip.createEmbeddedDocuments("Item", [itemData]);
+          console.log(myShip)
+          myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp + createData.lots * createData.bp) * 100) / 100  })
+        });
+        // myShip.onBeforeCreateNewItem(itemData);
+        
+        
+        const tradeData = {
+          success: success, 
+          variation: variation, 
+          dc: dc,
+          actor: actor,
+          myShip: myShip,
+          name: createData.name,
+          createData: createData, 
+          variation: variation, 
+          sell: true,
+          buy: false,
+          planet : this.object
+          
+        }
+        this.tradeChatmessage(tradeData)
+
+
+        
+      }
+    }
+  },
+  default: "create"
+}).render(true);
+return null;
 
   }
+
+
+async tradeChatmessage(tradeData) {
+ // let templateData = { variation: variation, dc: dc, chatMessage: chatMessage, destsplanetArray: destsplanetArray, purchaseData:purchaseData }
+  
+  console.log(tradeData)
+  const html = await renderTemplate(`modules/sfrpg-galactic-trade/templates/chat-tradeMessage.html`, tradeData);
+  const dc = tradeData.createData.dc
+  const success = tradeData.success
+  const sellPriceSigned = tradeData.createData.bp
+  const chat = ChatMessage.create({
+    user: game.user.id,
+    speaker: {
+      actor: tradeData.myShip,
+      alias: tradeData.actor.name
+    },
+    content: html,
+    //flavor: `DC ${dc} Sell check - ${success ? "success!" : "failure!"} Sell for additional ${sellPriceSigned} BP/Lot `,
+  })
+}
+
 
   async _onchangeSlider(event) {
     // getElementById("p1").innerHTML = "New text!";
-    console.log(event,this)
+    console.log(event, this)
     const slider = event.currentTarget;
     const tokenId = slider.dataset.id;
     //event.currentTarget.style.backgroundColor = "lightgreen"
-//   const update = {"system.attributes.population[tokenId]"}
+    //   const update = {"system.attributes.population[tokenId]"}
 
-  //  this.object.update()
+    //  this.object.update()
 
 
-//    var slider = html.getElementById("myRange");
-//    var output = html.getElementById("demo");
-//    output.innerHTML = slider.value; // Display the default slider value
-    
+    //    var slider = html.getElementById("myRange");
+    //    var output = html.getElementById("demo");
+    //    output.innerHTML = slider.value; // Display the default slider value
+
     // Update the current slider value (each time you drag the slider handle)
-  //  slider.oninput = function() {
-  //    output.innerHTML = this.value;
- //   }
+    //  slider.oninput = function() {
+    //    output.innerHTML = this.value;
+    //   }
 
   }
-  
+
   async setcurrentlocation(event = {}) {
     console.log(this, event)
 
@@ -295,32 +470,16 @@ export class PlanetSheet extends JournalTextPageSheet {
 
 
   async recalculateTrade(event = {}) {
-    console.log(this, event)
-
     const inputElement = event.currentTarget ? event.currentTarget.dataset.type : null
     const newEconomy = inputElement ? event.currentTarget.value : ""
-    console.log(inputElement, newEconomy)
-
-
     const systemData = this.object.system
     const trade = systemData.trade
     const newGoods = await foundry.utils.duplicate(trade.goods)
-
-
-
-
-
     for (const [k, v] of Object.entries(newGoods)) {
       //basePrice : 53, baseQuantity : 70, economicFactor : 15, priceStability : 7
-
       const goodsData = SFRPG_GT.goodsData[k]
-              
       v.price = await this.calculatePrice(k)
       v.quantity = await this.calculateQuantity(k)
-
-      
-  
-
     }
     const update = { "system.trade.goods": newGoods }
     if (newEconomy) {
@@ -330,19 +489,23 @@ export class PlanetSheet extends JournalTextPageSheet {
 
     if (game.modules.get("foundryvtt-simple-calendar")?.active) update["system.trade.tradeDataDate"] = SimpleCalendar.api.timestamp()
     const updatedJournal = await this.object.update(update)
-    console.log(updatedJournal.name)
-    for (const [k, v] of Object.entries(updatedJournal.system.trade.goods)) {
+   // console.log(updatedJournal.name)
+   // for (const [k, v] of Object.entries(updatedJournal.system.trade.goods)) {
       //  console.log(k, v.price, v.quantity)
-    }
+   // }
 
   }
-
+/**
+ * 
+ * @param {Event} event
+ * @returns quantity
+ */
   async calculateQuantity(good) {
-    const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis")==="enhanced"? true : false ;
+    const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis") === "enhanced" ? true : false;
     const systemData = this.object.system
     const economy = systemData.attributes.economy
-   // if (inputElement) economy[inputElement] = newEconomy
-   const tradehub = 5
+    // if (inputElement) economy[inputElement] = newEconomy
+    const tradehub = 5
     const tradehubFactor = economy.tradehub ? economy.tradehub * tradehub / 100 : 0;
     const seasonFactor = game.settings.get("sfrpg-galactic-trade", "seasonFactor")
     const maxEconomyValue = game.settings.get("sfrpg-galactic-trade", "maxEconomyValue")
@@ -353,152 +516,192 @@ export class PlanetSheet extends JournalTextPageSheet {
     const goodsData = SFRPG_GT.goodsData[good]
     const goodType = goodsData.type
     let quantity = 0
-
     //1-3 (affluenceData Rich>>Poor) x 0-200  goodsData.baseQuantity x (200 - economy[goodType])/100 
- 
-    if(enhanced) {
-      quantity = goodsData.baseQuantity + ((Math.floor(Math.random() * 255)) & goodsData.priceStability) + ((1 - dayfactor) * goodsData.priceStability * seasonFactor) - (affluence * goodsData.baseQuantity * (200 - economy[goodType])/100) + goodsData.baseQuantity * tradehubFactor
-     
+    if (enhanced) {
+      quantity = goodsData.baseQuantity + ((Math.floor(Math.random() * 255)) & goodsData.priceStability) + ((1 - dayfactor) * goodsData.priceStability * seasonFactor) - (affluence * goodsData.baseQuantity * (200 - economy[goodType]) / 100) + goodsData.baseQuantity * tradehubFactor
     }
-      else {
+    else {
       quantity = goodsData.baseQuantity + ((Math.floor(Math.random() * 255)) & goodsData.priceStability) + ((1 - dayfactor) * goodsData.priceStability * seasonFactor) - (goodsData.economicFactor * economyFactor)
-    
-      }
-          // quantity = (base_quantity + (random AND mask) - economy * economic_factor) mod 64
-          
-    //  console.log(1 - dayfactor)
-
-       // console.log(quantity,v, dayfactor, goodsData.baseQuantity,goodsData.priceStability,seasonFactor,economyFactor)
+    }
     return Math.max(Math.floor(quantity), 0)
-
   }
+/**
+ * 
+ * @param {*} good 
+ * @returns 
+ */
 
+  async calculatePrice(good) {
+    const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis") === "enhanced" ? true : false;
+    const seasonFactor = game.settings.get("sfrpg-galactic-trade", "seasonFactor")
+    const maxEconomyValue = game.settings.get("sfrpg-galactic-trade", "maxEconomyValue")
+    const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue")
+    const dayfactor = await this.dayfactor()
+    const systemData = this.object.system
+    const economy = systemData.attributes.economy
+    const goodsData = SFRPG_GT.goodsData[good]
+    const randomno = Math.floor(Math.random() * 255)
+    const productionType = economy.productionType ? SFRPG_GT.planets.productionTypeData[economy.productionType] : 0
+    const affluence = economy.affluence ? SFRPG_GT.planets.affluenceData[economy.affluence] : 0
+    const economyFactor = (affluence * productionType - 1) * maxEconomyValue / 15
+    let decPrice = 0
+    const goodType = SFRPG_GT.goodsData[good].type
+    const typefactor = SFRPG_GT.goodsTypeData[goodType] / 100
+    const maxImportPremium = 60
+    const exportFactor = (economy[goodType] * maxImportPremium / -200 + maxImportPremium) / 100   // 0-200 >> 0-60%
 
-async calculatePrice(good) {
+    //console.log(good, typefactor)
 
-  const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis")==="enhanced"? true : false ;
+    if (enhanced) {
+      decPrice = (goodsData.basePrice + (randomno & goodsData.priceStability) + (dayfactor * goodsData.priceStability * seasonFactor) + (goodsData.basePrice * typefactor * affluence) + (goodsData.basePrice * exportFactor)) * 4
+    }
+    else {
+      decPrice = (goodsData.basePrice + (randomno & goodsData.priceStability) + (dayfactor * goodsData.priceStability * seasonFactor) + (goodsData.economicFactor * economyFactor)) * 4
+    }
 
-  const seasonFactor = game.settings.get("sfrpg-galactic-trade", "seasonFactor")
-  const maxEconomyValue = game.settings.get("sfrpg-galactic-trade", "maxEconomyValue")
-  const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue")
-  const dayfactor = await this.dayfactor()
-  const systemData = this.object.system
-  const economy = systemData.attributes.economy
-  const goodsData = SFRPG_GT.goodsData[good]
-  const randomno = Math.floor(Math.random() * 255)
-  const productionType = economy.productionType ? SFRPG_GT.planets.productionTypeData[economy.productionType] : 0
-  const affluence = economy.affluence ? SFRPG_GT.planets.affluenceData[economy.affluence] : 0
-  const economyFactor = (affluence * productionType - 1) * maxEconomyValue / 15
-  let decPrice = 0
-  const goodType = SFRPG_GT.goodsData[good].type
-  const typefactor = SFRPG_GT.goodsTypeData[goodType]/100
-  const maxImportPremium = 60
-  const exportFactor = (economy[goodType] * maxImportPremium / -200 + maxImportPremium) /100   // 0-200 >> 0-60%
-
-//console.log(good, typefactor)
-
-  if(enhanced) {
-  decPrice = (goodsData.basePrice + (randomno & goodsData.priceStability) + (dayfactor * goodsData.priceStability * seasonFactor) + (goodsData.basePrice * typefactor * affluence ) + (goodsData.basePrice * exportFactor ) ) * 4
- 
-}
-  else {
-  decPrice = (goodsData.basePrice + (randomno & goodsData.priceStability) + (dayfactor * goodsData.priceStability * seasonFactor) + (goodsData.economicFactor * economyFactor )) * 4
-
+    const price = Math.max(Math.floor(decPrice) / 10, 0.1)
+    return price
   }
-  
-  const price = Math.max(Math.floor(decPrice) / 10, 0.1)
-  return price
-}
-
-async dayfactor() {
-  const systemData = this.object.system
-  // need to do this instead of random to get the same value for the same day
-  const today = Math.ceil(Math.floor(Math.random() * systemData.details.yearLength))
-  const dayfactor = (Math.sin(today / systemData.details.yearLength * 2 * Math.PI) + 1) * 0.5
-  return dayfactor
-
-}
 
   /**
-       * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
-       * @param {Event} event The originating click event
-       */
+   * 
+   * @returns dayfactor
+   */
+  async dayfactor() {
+    const systemData = this.object.system
+    // need to do this instead of random to get the same value for the same day
+    const today = Math.ceil(Math.floor(Math.random() * systemData.details.yearLength))
+    const dayfactor = (Math.sin(today / systemData.details.yearLength * 2 * Math.PI) + 1) * 0.5
+    return dayfactor
+  }
+
+/**
+ * 
+ * @param {*} event 
+ * @returns 
+ */
   async _onItemCreate3(event) {
     event.preventDefault();
+    const systemData = this.object.system
     const header = event.currentTarget;
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
+    const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue") ?? 25;
     const myShip = await game.actors.directory.documents.find((actor) => actor.uuid === currentStarship)
-    if (!myShip) { console.log("No Ship"); return null }
+    if (!myShip) { return ui.notifications.warn(game.i18n.format("No Trading ship selected in Configure Game Settings")) }
     const dataset = header.dataset;
-    console.log(header.dataset, this)
 
-    const goods = this.object.system.trade.goods[dataset.id]
+    const token = game.canvas.tokens.controlled[0]
+    console.log(token)
 
+    if (!token) return ui.notifications.warn(game.i18n.format("No Actor Token Selected"));
+    const actor = token.actor
+    if (actor.type == "starship") return ui.notifications.warn(game.i18n.format("No Character with skills selected"));
+    const allskills = actor.system.skills
+    let skillToUse = "dip"
 
+    // use merchant if greater
 
+    for (let [k, v] of Object.entries(allskills)) {
+      if (v.subname?.toLowerCase() === "merchant") {
+        if (v.mod > allskills.dip.mod) skillToUse = k
+      }
+    }
 
-
+    const roll = await actor.rollSkill(skillToUse)
+    const result = roll.callbackResult.total
+    const charLevel = actor.system.details.level.value
+    let dc = 15 + Math.floor(charLevel * 1.5)
+    if (systemData.trade.goods[dataset.id].quantity === 0) dc = 25 + Math.floor(charLevel * 1.5);
+    let success = false
+    let sellPrice = 0
+    console.log(dc, result)
+    let variation = 0
+    if (result < dc) { success = false }
+    else {
+      variation = 1 + Math.floor((result - dc) / 5);
+      success = true
+    }
+    //console.log(header.dataset, this)
+    const date = this.object.system.trade.tradeDataDate
+    const parsedDate = SimpleCalendar.api.formatTimestamp(date)
+    const goods = foundry.utils.duplicate(this.object.system.trade.goods[dataset.id])
+    goods.quantity += variation * 25
+    goods.lots = Math.max(Math.round(goods.quantity / 25 * 100) / 100, 0)
     let createData = {
       name: game.i18n.localize(SFRPG_GT.goods[dataset.id]),
       type: "goods",
       qty: 0
     };
-
-    let templateData = { name: createData.name, goods: goods, type: "goods" }
+    let templateData = { buy: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
     console.log(createData, templateData)
     const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
 
     new Dialog({
-      title: game.i18n.format("SFRPG.NPCSheet.Interface.CreateItem.Title"),
+      title: game.i18n.format("Buy Items"),
       content: dlg,
       buttons: {
         create: {
           icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.format("SFRPG.NPCSheet.Interface.CreateItem.Button"),
+          label: game.i18n.format("Buy Items"),
           callback: html => {
             const form = html[0].querySelector("form");
             let formDataExtended = new FormDataExtended(form);
             // console.log(formDataExtended,html)
             foundry.utils.mergeObject(createData, formDataExtended.object);
 
-            console.log(formDataExtended)
+            console.log(createData)
             //this.onBeforeCreateNewItem(createData);
+            createData.lots = Math.max(Math.round(createData.qty / 25 * 100) / 100, 0)
+            createData.bp = Math.round(createData.price  / BPValue * 100) / 100
+            templateData.total = { eCr: Math.round(createData.qty * goods.price * 100) / 100, bp: Math.round(createData.lots * goods.bp * 100) / 100 }
+            createData.total =  templateData.total
+            createData.balance = {bp: Math.round((myShip.system.currency.bp - createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp - createData.total.bp) * BPValue * 100) / 100}
+            renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then((cargoDesc) => {
+              const itemData = {
+                name: createData.qty + " tons of " + createData.name,
+                type: createData.type,
+                flags: { SFRPG_GT: { type: dataset.id, qty: createData.qty, goods: goods } },
+                system: {
+                  description: { value: cargoDesc, gmNotes: "Bad thing happen" },
+                  //description: { value: "This is " + createData.qty + " tons of " + createData.name + "purchased from " + this.object.name + " for " + createData.price + " BP / lot",short:dlg },
 
-            const itemData = {
-              name: createData.qty + " tons of " + createData.name,
-              type: createData.type,
+                  bulk: createData.qty + " tons",
+                  price:  createData.bp,
+                  quantity: createData.lots
 
-              system: {
-                description: { value: "This is " + createData.qty + " tons of " + createData.name + "purchased from " + this.object.name + " for " + createData.price + " BP / lot" },
-                bulk: createData.qty + " tons",
-                price: createData.price,
-              }
-            };
+                }
+              };
+              myShip.createEmbeddedDocuments("Item", [itemData]);
+            //  console.log(createData.lots, createData.bp, createData.price, Math.round(createData.lots * createData.bp * 100) / 100)
+              myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp - createData.lots * createData.bp) * 100) / 100 })
+            });
             // myShip.onBeforeCreateNewItem(itemData);
-            myShip.createEmbeddedDocuments("Item", [itemData]);
+
+            const tradeData = {
+              success: success, 
+              variation: variation, 
+              dc: dc,
+              actor: actor,
+              myShip: myShip,
+              name: createData.name,
+              createData: createData, 
+              variation: variation, 
+              sell: false,
+              buy: true,
+              planet : this.object
+              
+            }
+            this.tradeChatmessage(tradeData)
+
           }
         }
       },
       default: "create"
     }).render(true);
-
-
-
     return null;
-
-
-    const xitemData = {
-      name: `New ${type.capitalize()}`,
-      type: type,
-      data: foundry.utils.duplicate(header.dataset)
-    };
-    delete itemData.data['type'];
-
-    this.onBeforeCreateNewItem(itemData);
-
-    return this.actor.createEmbeddedDocuments("Item", [itemData]);
   }
-
-
-
 }
+
+
+
+

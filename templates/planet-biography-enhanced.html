@@ -96,7 +96,7 @@
         {{/if}}
     </div>
     <div class="form-group singleFlex" data-tooltip="0% = High Imports / 200% High Exports">
-        <label class="h3">{{localize "Imports/ Exports"}} </label>
+        <label class="h3">{{localize "Exports / Imports %"}} </label>
     </div>
 
     <div class="form-group {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Luxuries</h3> Alien Artifacts <br>Art or antiques <br>Luxuries <br>Narcotics">
@@ -135,7 +135,7 @@
             data-id="population" name="system.attributes.economy.sentient">
         {{/if}}
     </div>
-    <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Trade Hub Factor</h3>0-200 0 = Normal planatary trade only Resources are consumed or supplied by the planet.<br>100% = Major trade hub where littlt trade comes to or from the planet.">
+    <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Trade Hub Factor</h3>0-200 <br>0 = Normal planatary trade only. Resources are consumed or supplied by the planet.<br>100% = Major trade hub where little trade is for local use. (Prices generally average, increases available goods )">
         <label class="singleLine">{{localize "Trading Port"}}: {{document.system.attributes.economy.tradehub}} %</label>
         {{#if editable}}
         <input type="range" min="0" max="100" value="{{document.system.attributes.economy.tradehub}}" class="slider"

@@ -1,0 +1,33 @@
+
+<table>
+    <thead style="text-align: center;">
+        <tr>
+            <th rowspan="2">{{localize "Cargo Type"}}</th>
+            <th colspan="3">{{localize "eCr / tons"}}</th>
+            <th colspan="3">{{localize "BP / Lots"}}</th>
+        </tr>
+        <tr>
+          
+            <th>{{localize "Price"}}</th>
+            <th>{{localize "Quantity"}}</th>
+            <th>{{localize "Total"}}</th>
+            <th>{{localize "Price"}}</th>
+            <th>{{localize "Quantity"}}</th>
+            <th>{{localize "Total"}}</th>
+        </tr>
+    </thead>
+    <tbody style="text-align: center;">
+        <tr >
+            <td style="text-align: left;">{{name}}</td>
+            <td style="text-align: center;">{{goods.price}}</td>
+            <td style="text-align: center;">{{goods.quantity}}</td>
+            <td style="text-align: center;">{{total.eCr}}</td>
+            <td style="text-align: center;">{{goods.bp}}</td>
+            <td style="text-align: center;">{{goods.lots}}</td>
+            <td style="text-align: center;">{{total.bp}}</td>
+        </tr>
+    </tbody>    
+
+</table>
+{{console this}}
+<p>{{purchaserName}} purchased these trade goods in {{location}} on {{date.date}}. May @UUID[Compendium.sfrpg.setting.JournalEntry.vIgmW8C54qgxPqUg]{Abadar} bring us good fortune. </p>

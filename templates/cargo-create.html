@@ -3,6 +3,18 @@
         <label>{{localize "Cargo Type"}}</label>
         <label>{{name}}</label>
     </div>
+    {{#if success}}
+    <div class="form-group">
+        {{#if buy}}
+        <p>Your great skills found the opportunity to buy {{variation}} additional lots</p>
+        {{/if}}
+        {{#if sell}}
+        <p>Your great skills found the opportunity to sell at {{variation}}% highher price</p>
+        {{/if}}
+    </div>
+    {{/if}}
+
+
     <div class="form-group">
         <label>{{localize "Price"}}</label>
         <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="price" value="{{goods.price}}" />
@@ -11,6 +23,8 @@
         <label>{{localize "Quantity"}}</label>
         <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="qty" value="{{goods.quantity}}" />
     </div>
+
+
 {{console this}}
 
 </form>

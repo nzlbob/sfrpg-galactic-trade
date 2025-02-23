@@ -91,21 +91,22 @@ const Operations = {
 const purchaseData = {}
 const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
 const myShip = await game.actors.directory.documents.find((actor) => actor.uuid === currentStarship )
+if (!myShip) return ui.notifications.warn("No Starship Selected") 
 purchaseData.ship = myShip
 purchaseData.name = myShip.name
+const location = myShip.getFlag("sfrpg-galactic-trade", "currentLocation") 
+if (!location) return ui.notifications.warn("Current Starship Location is incorrectly defined. Prease set location on the Galactic Trade Journal Planet sheet")
+// const location = myShip.flags["sfrpg-galactic-trade"].currentLocation
+console.log(location,myShip)
 
-const location = myShip.flags["sfrpg-galactic-trade"].currentLocation
 const locationdata = location.split(".")
+if(locationdata.length<4) return ui.notifications.warn("Current Starship Location is incorrectly defined. Prease set location on the Galactic Trade Journal Planet sheet")
 const JournalEntry = game.journal.get(locationdata[1])
-console.log(JournalEntry)
+//console.log(JournalEntry)
 const planet = JournalEntry.pages.get(locationdata[3])
 
 purchaseData.planet = planet
-console.log(purchaseData)
-//purchasor.location = 
 
-
-    
     const destsplanetArray = {}
     destspaceArray.forEach((space) => {
       //const randomplanet = await this.rollRandomWorld(space)
@@ -117,13 +118,12 @@ console.log(purchaseData)
     }
     )
 
-
-    let templateData = { variation: variation, dc: dc, chatMessage: chatMessage, destsplanetArray: destsplanetArray, purchaseData:purchaseData }
-    console.log(templateData)
-    const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/chat-buy.html`, templateData);
     //console.log(dlg)
 
     // Create the roll and the corresponding message
+    let templateData = { variation: variation, dc: dc, chatMessage: chatMessage, destsplanetArray: destsplanetArray, purchaseData:purchaseData }
+    console.log(templateData)
+    const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/chat-buy.html`, templateData);
     const r = await new Roll(cargo, rollData);
     await r.toMessage({
       user: game.user.id,
@@ -132,10 +132,6 @@ console.log(purchaseData)
     });
     if (r.total < 1) return
     // get Tables
-
-
-
-
 
 
   },
@@ -196,10 +192,10 @@ console.log(purchaseData)
           
                 price: await planet.sheet.calculatePrice(k2),
                 quantity : await planet.sheet.calculateQuantity(k2),
-                noBuy:  legal, //tradeUpdate.goods[k2]? tradeUpdate.goods[k2].noBuy :
-                noSell:  legal, //tradeUpdate.goods[k2]? tradeUpdate.goods[k2].noSell :
-                illegalBuy:  illegal, //tradeUpdate.goods[k2]? tradeUpdate.goods[k2].illegalBuy :
-                illegalSell: illegal //tradeUpdate.goods[k2]? tradeUpdate.goods[k2].illegalSell : 
+                noBuy:  tradeUpdate.goods[k2]? tradeUpdate.goods[k2].noBuy : legal,
+                noSell:  tradeUpdate.goods[k2]? tradeUpdate.goods[k2].noSell : legal, //
+                illegalBuy:  tradeUpdate.goods[k2]? tradeUpdate.goods[k2].illegalBuy : illegal, //
+                illegalSell: tradeUpdate.goods[k2]? tradeUpdate.goods[k2].illegalSell : illegal //
           //  planet.system.trade.goods[k2].price = await this.calculatePrice(good, planet)
           }
        }
@@ -273,7 +269,7 @@ planet.update({"system.trade" : tradeUpdate })
 
     const spacePlanets = planets.filter(planet => space === "all" ? true : planet.system.details.space === space)
 
-    console.log(spacePlanets)
+   // console.log(spacePlanets)
 
     const randomIndex = Math.floor(Math.random() * spacePlanets.length)
     const planet = spacePlanets[randomIndex]
@@ -332,7 +328,7 @@ Hooks.once("init", async function () {
 
   game.settings.register("sfrpg-galactic-trade", "seasonFactor", {
     name: "Season Factor",
-    hint: "Season Factor",
+    hint: "Season Factor 0-1 for seasonal trade price fluctuations. 0 = no effect, 1 = maximum effect",
     scope: "world",
     type: Number,
     default: 1,
@@ -340,7 +336,7 @@ Hooks.once("init", async function () {
   });
   game.settings.register("sfrpg-galactic-trade", "maxEconomyValue", {
     name: "Max Economy Value Factor",
-    hint: "The maximum effect economy can have on trade prices. Values > 10 may lead to free goods in Poor systems",
+    hint: "The maximum effect economy can have on trade prices. Values > 10 may lead to free goods in poor systems. 7 is a good starting (1 byte)",
     scope: "world",
     type: Number,
     default: 7,
@@ -349,27 +345,27 @@ Hooks.once("init", async function () {
 
   game.settings.register("sfrpg-galactic-trade", "BPValue", {
     name: "Trade BP to Credit Conversion",
-    hint: "The Trade Conversion rate",
+    hint: "The Trade Conversion rate for BP to Elite Commercial Credits (eCr) as all prices are calculated in elete credits. Try 1 BP = 25 eCr",
     scope: "world",
     type: Number,
-    default: 500000,
+    default: 25,
     config: true
   });
 
   game.settings.register("sfrpg-galactic-trade", "tradeBasis", {
     name: "Trading Basis",
-    hint: "The type of tading regime, Original Galactic trade from Fly Free or die, based on Elite (1987), Enhanced Galactic Trade System",
+    hint: "The type of trading regime, Original Galactic trade from Fly Free or die (use Macros), Elite: based on Elite (1987) Planet Economy + Production Type determines prices. Enhanced: This system uses similar formulas to the Elite system except prices are based on economic group import / export ratios. ",
     scope: "world",
     type: String,
     default: "galactic",
     config: true,
     choices: {
-      galactic: "Galactic Trade",
-      elite: "Elite",
+      galactic: "Galactic Trade (FFod)",
+      elite: "Elite (1987) Trade System",
       enhanced: "Enhanced Galactic Trade System"
     }
   });
-
+/*
   game.settings.register("sfrpg-galactic-trade", "tradeDate", {
     name: "Trade Date",
     hint: "The maximum effect economy can have on trade prices. Values > 10 may lead to free goods in Poor systems",
@@ -377,8 +373,9 @@ Hooks.once("init", async function () {
     config: true,
     type: Date
   });
-
+*/
 });
+
 Hooks.once("ready", () => {
   console.log(`sfrpg-galactic-trade  | [READY] Preparing system for operation`);
   const readyTime = (new Date()).getTime();
