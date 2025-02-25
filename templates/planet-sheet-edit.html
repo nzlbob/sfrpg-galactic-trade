@@ -58,11 +58,21 @@
             <table>
                 <thead>
                     <tr>
-                        <th colspan="11">
+                        <th colspan="5">
                             Trade Data as at {{tradeDataDate.date}} 
                         </th>
-                    </tr>
+                        <th colspan="2">
 
+
+                        </th>
+
+
+                        {{#if isGM}}
+                        <th colspan="4">
+                            <input   type = "button" value = "Update Prices" class="recalculatetrade" data-id="{{document.id}}">
+                        </th>
+                        {{/if}}
+                    </tr>
                     <tr>
                         <th rowspan="2">
                             Goods
@@ -76,13 +86,16 @@
                         <th colspan="2">
                             Trade
                         </th>       
+                        {{#if isGM}}
                         <th colspan="2">
                             Trade
                         </th>  
                         <th colspan="2">
                             Illegal Trade
                         </th>      
+                        {{/if}}
                     </tr>
+                   
                     <tr>
                         <th>
                             eCr
@@ -102,6 +115,7 @@
                         <th>
                             Sell
                         </th>
+                        {{#if isGM}}
                         <th>
                             Buy
                         </th>
@@ -114,6 +128,7 @@
                         <th>
                             Sell
                         </th>
+                        {{/if}}
                     </tr>
                 </thead>
                 {{#each document.system.trade.goods as |category id|}}
@@ -126,7 +141,14 @@
                         {{category.price}}
                     </td>
                     <td>
+
+
+                        {{#if ../isGM}}
+                        <input name= "system.trade.goods.{{id}}.quantity" value="{{category.quantity}}" type = "number" >
+                        {{else}}
                         {{category.quantity}}
+
+                        {{/if}}
                     </td>
                     <td>
                         {{category.bp}}
@@ -140,18 +162,20 @@
                     <td>
                        <input type = "button" value = "Sell" class="sell" data-id="{{id}}">
                     </td>
+                    {{#if ../isGM}}
                     <td>
-                        <input name= "system.trade.goods.{{id}}.noBuy" {{checked (tradelookup ../document.system.trade.goods id "noBuy")}} type = "checkbox"  class="TradeBuy" data-id="{{id}}">
+                        <input name= "system.trade.goods.{{id}}.noBuy" {{checked noBuy }} type = "checkbox"  class="TradeBuy" data-id="{{id}}">
                     </td>
                     <td>
-                       <input name= "system.trade.goods.{{id}}.noSell" {{checked (tradelookup ../document.system.trade.goods id "noSell")}} type = "checkbox"  class="TradeSell" data-id="{{id}}">
+                       <input name= "system.trade.goods.{{id}}.noSell" {{checked noSell}} type = "checkbox"  class="TradeSell" data-id="{{id}}">
                     </td>
                     <td>
-                        <input name= "system.trade.goods.{{id}}.illegalBuy"  {{checked (tradelookup ../document.system.trade.goods id "illegalBuy")}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
+                        <input name= "system.trade.goods.{{id}}.illegalBuy"  {{checked illegalBuy}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
                     </td>
                     <td>
-                       <input name= "system.trade.goods.{{id}}.illegalSell"  {{checked (tradelookup ../document.system.trade.goods id "illegalSell")}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
+                       <input name= "system.trade.goods.{{id}}.illegalSell"  {{checked illegalSell}} type = "checkbox"  class="IllegalBuy" data-id="{{id}}">
                     </td>
+                    {{/if}}
                 </tr>
                 {{/each}}
             </table>

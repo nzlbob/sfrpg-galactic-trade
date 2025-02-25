@@ -6,15 +6,25 @@
     {{#if success}}
     <div class="form-group">
         {{#if buy}}
-        <p>Your great skills found the opportunity to buy {{variation}} additional lots</p>
+        <p>Your great skills (DC {{dc}}) found the opportunity to buy {{variation}} additional lots</p>
         {{/if}}
         {{#if sell}}
-        <p>Your great skills found the opportunity to sell at {{variation}}% highher price</p>
+        <p>Your great skills (DC {{dc}}) found the opportunity to sell at {{variation}}% highher price</p>
         {{/if}}
     </div>
     {{/if}}
+    {{#if buy}}
+    {{#if pc}}
+    <p>{{cdata}}</p>
+    {{/if}}
+    {{/if}}
 
 
+    <div class="form-group">
+        <input type="checkbox" name="dn25" {{checked dn25}} /> <label>{{localize "-25%"}}</label> 
+        <input type="checkbox" name="up25" {{checked up25}} /> <label>{{localize "+25%"}}</label>
+        
+    </div>
     <div class="form-group">
         <label>{{localize "Price"}}</label>
         <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="price" value="{{goods.price}}" />

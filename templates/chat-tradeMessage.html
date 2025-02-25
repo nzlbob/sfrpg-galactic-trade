@@ -11,9 +11,16 @@
         <th>
             Goods
         </th>
-        <th colspan="2">
-            {{name}}
-        </th>
+        <td colspan="2">
+
+            {{#if sell}}
+            {{createData.qty}} tons of {{name}}
+            {{/if}}
+            {{#if buy}}
+            <a class="content-link" draggable="true" data-link="" data-uuid="{{newGoods.uuid}}" data-id="{{newGoods.uuid}}" data-type="Actor"  data-tooltip="My Cargo"><i class="fas fa-medal"></i> {{newGoods.name}}</a>
+            {{/if}}
+
+        </td>
     </tr>
     <tr>
         <td>
@@ -21,6 +28,8 @@
         </td>
         <td colspan="2">
             <a class="content-link" draggable="true" data-link="" data-uuid="{{myShip.uuid}}" data-id="{{myShip.uuid}}" data-type="Actor"  data-tooltip="My Ship"><i class="fas fa-medal"></i> {{myShip.name}}</a>
+        
+
         </td>
     </tr>
     <tr>

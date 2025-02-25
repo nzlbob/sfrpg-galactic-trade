@@ -23,7 +23,7 @@
     <div class="form-group stacked doubleFlex"
         data-tooltip="<strong>{{localize 'Location'}}</strong><br>@details.space">
         <label class="singleLine">{{localize "Location"}}</label>
-        <select {{#if (not editable)}}disabled{{/if}} name="system.details.space">
+        <select {{#if (not isGM)}}disabled{{/if}} name="system.details.space">
             {{ selectOptions config.planets.space selected=document.system.details.space blank=""
             localize=true}}
         </select>
@@ -32,7 +32,7 @@
     <div class="form-group stacked doubleFlex"
         data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
         <label class="singleLine">{{localize "Astronomical Object"}}</label>
-        <select {{#if (not editable)}}disabled{{/if}} name="system.details.object">
+        <select {{#if (not isGM)}}disabled{{/if}} name="system.details.object">
             {{ selectOptions config.planets.types selected=document.system.details.object blank=""
             localize=true}}
         </select>
@@ -41,7 +41,7 @@
     <div class="form-group stacked doubleFlex"
         data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
         <label class="singleLine">{{localize "Gravity"}}</label>
-        <select {{#if (not editable)}}disabled{{/if}} name="system.details.gravity">
+        <select {{#if (not isGM)}}disabled{{/if}} name="system.details.gravity">
             {{ selectOptions config.planets.gravity selected=document.system.details.gravity blank=""
             localize=true}}
         </select>
@@ -49,7 +49,7 @@
     <div class="form-group stacked doubleFlex"
         data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
         <label class="singleLine">{{localize "Atmosphere"}}</label>
-        <select {{#if (not editable)}}disabled{{/if}} name="system.details.atmosphere">
+        <select {{#if (not isGM)}}disabled{{/if}} name="system.details.atmosphere">
             {{ selectOptions config.planets.atmosphere selected=document.system.details.atmosphere
             blank=""
             localize=true}}
@@ -60,7 +60,7 @@
     <div class="form-group stacked doubleFlex"
         data-tooltip="<strong>{{localize 'Year Length (in standard days)'}}</strong><br>@details.yearLength">
         <label class="singleLine">{{localize "Year Length"}}</label>
-        <input {{#if (not editable)}}disabled{{/if}} class="singleLine" type="text" name="system.details.yearLength"
+        <input {{#if (not isGM)}}disabled{{/if}} class="singleLine" type="text" name="system.details.yearLength"
             value="{{document.system.details.yearLength}}" data-dtype="String"
             placeholder="{{localize 'SFRPG.ActorSheet.Biography.DateOfBirthPlaceholder'}}" />
     </div>
@@ -68,7 +68,7 @@
     <div class="form-group stacked doubleFlex"
         data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
         <label class="singleLine">{{localize "Government"}}</label>
-        <select {{#if (not editable)}}disabled{{/if}} class="updateeconomy" name="system.attributes.economy.government"
+        <select {{#if (not isGM)}}disabled{{/if}} class="updateeconomy" name="system.attributes.economy.government"
             data-type="government">
             {{ selectOptions config.planets.government
             selected=document.system.attributes.economy.government blank=""
@@ -80,7 +80,7 @@
     <div class="form-group stacked doubleFlex"
         data-tooltip="<strong>{{localize 'SFRPG.ActorSheet.Biography.DateOfBirth'}}</strong><br>@details.biography.dateOfBirth">
         <label class="singleLine">{{localize "Economy"}}</label>
-        <select {{#if (not editable)}}disabled{{/if}} class="updateeconomy" name="system.attributes.economy.affluence"
+        <select {{#if (not isGM)}}disabled{{/if}} class="updateeconomy" name="system.attributes.economy.affluence"
             data-type="affluence">
             {{ selectOptions config.planets.affluence
             selected=document.system.attributes.economy.affluence
@@ -90,7 +90,7 @@
 
     <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="Population 1 to 100 billion">
         <label class="singleLine">{{localize "Population"}}: {{document.system.attributes.population}} billion</label>
-        {{#if editable}}
+        {{#if isGM}}
         <input type="range" min="1" max="100" value="{{document.system.attributes.population}}" class="slider"
             data-id="population" name="system.attributes.population">
         {{/if}}
@@ -101,7 +101,7 @@
 
     <div class="form-group {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Luxuries</h3> Alien Artifacts <br>Art or antiques <br>Luxuries <br>Narcotics">
         <label class="singleLine">{{localize "Luxuries"}}: {{document.system.attributes.economy.luxuries}} %</label>
-        {{#if editable}}
+        {{#if isGM}}
         <input type="range" min="0" max="200" value="{{document.system.attributes.economy.luxuries}}" class="slider"
             data-id="population" name="system.attributes.economy.luxuries">
         {{/if}}
@@ -109,35 +109,35 @@
 
     <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Technology</h3> Electronics  <br>	Machinery<br>	Precision equipment	<br>Radioactives	<br>Vehicles	<br>Weapons or ammo        ">
         <label class="singleLine">{{localize "Technology"}}: {{document.system.attributes.economy.tech}} %</label>
-        {{#if editable}}
+        {{#if isGM}}
         <input type="range" min="0" max="200" value="{{document.system.attributes.economy.tech}}" class="slider"
             data-id="population" name="system.attributes.economy.tech">
         {{/if}}
     </div>
-    <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Minerals and Gas</h3> Ceramics or glassware <br>Chemicals <br>Gem-Stones<br>Minerals or byproducts <br>Precious metals">
+    <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Minerals and Gas</h3> Ceramics <br>Chemicals <br>Gem-Stones<br>Minerals or byproducts <br>Precious metals">
         <label class="singleLine">{{localize "Minerals and Gas"}}: {{document.system.attributes.economy.minerals}} %</label>
-        {{#if editable}}
+        {{#if isGM}}
         <input type="range" min="0" max="200" value="{{document.system.attributes.economy.minerals}}" class="slider"
             data-id="population" name="system.attributes.economy.minerals">
         {{/if}}
     </div>
     <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Organic Products</h3>Hides or leather <br>Live animals <br>Plastics<br>Prepared food<br>Textiles<br>Vegetable products">
         <label class="singleLine">{{localize "Organic Products"}}: {{document.system.attributes.economy.organics}} %</label>
-        {{#if editable}}
+        {{#if isGM}}
         <input type="range" min="0" max="200" value="{{document.system.attributes.economy.organics}}" class="slider"
             data-id="population" name="system.attributes.economy.organics">
         {{/if}}
     </div>
     <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Sentient Resources</h3>Convicts<br>Refugees<br>Robots">
         <label class="singleLine">{{localize "Sentient Resources"}}: {{document.system.attributes.economy.sentient}} %</label>
-        {{#if editable}}
+        {{#if isGM}}
         <input type="range" min="0" max="200" value="{{document.system.attributes.economy.sentient}}" class="slider"
             data-id="population" name="system.attributes.economy.sentient">
         {{/if}}
     </div>
     <div class="form-group stacked {{#if editable}} doubleFlex {{else}} singleFlex {{/if}} " data-tooltip="<h3>Trade Hub Factor</h3>0-200 <br>0 = Normal planatary trade only. Resources are consumed or supplied by the planet.<br>100% = Major trade hub where little trade is for local use. (Prices generally average, increases available goods )">
         <label class="singleLine">{{localize "Trading Port"}}: {{document.system.attributes.economy.tradehub}} %</label>
-        {{#if editable}}
+        {{#if isGM}}
         <input type="range" min="0" max="100" value="{{document.system.attributes.economy.tradehub}}" class="slider"
             data-id="population" name="system.attributes.economy.tradehub">
         {{/if}}
@@ -154,7 +154,7 @@
 
     <div class="form-group singleFlex"
         data-tippy-content="<strong>{{localize 'SFRPG.ActorSheet.Biography.OtherVisuals'}}</strong><br>@details.biography.otherVisuals">
-        <label>{{localize "SFRPG.ActorSheet.Biography.OtherVisuals"}}</label>
+        <label>{{localize "Notes"}}</label>
     </div>
 
     <textarea name="system.details.biography.otherVisuals">{{system.details.biography.otherVisuals}}</textarea>
@@ -168,10 +168,11 @@
         <a class="item active{{#if system.details.ecology.value}} highlight{{/if}}" data-tab="ecology">{{localize
             "SFRPG.ActorSheet.Biography.TabEcology"}}</a>
         {{/if}}
-
+            {{#if isGM}}
+           
         <a class="item{{#if system.details.biography.gmNotes}} highlight{{/if}}" data-tab="gmNotes">{{localize
             "SFRPG.ActorSheet.Biography.TabGM"}} {{#if system.details.biography.gmNotes}} (!){{/if}}</a>
-
+            {{/if}}
     </nav>
 
     <section class="bio-body">

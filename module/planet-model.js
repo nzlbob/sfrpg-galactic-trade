@@ -127,11 +127,11 @@ export class PlanetModel extends foundry.abstract.TypeDataModel {
       if (v.price < (averageGalacticPrice / colorband)) v.color = "green"
     }
   }
-/**
- * 
- * @param {*} good 
- * @returns 
- */
+  /**
+   * 
+   * @param {*} good 
+   * @returns 
+   */
   averageGalacticPrice(good) {
     const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis") === "enhanced" ? true : false;
     const maxEconomyValue = game.settings.get("sfrpg-galactic-trade", "maxEconomyValue")
@@ -194,6 +194,8 @@ export class PlanetSheet extends JournalTextPageSheet {
     });
   }
 
+
+
   async getData(options = {}) {
     // console.log(this)
     const context = await super.getData(options);
@@ -248,6 +250,17 @@ export class PlanetSheet extends JournalTextPageSheet {
     html.find('.setcurrentlocation').click(event => this.setcurrentlocation(event));
     html.find('.rolldip').click(event => this.rolldip(event));
 
+/*
+ if ( !this.isEditable ) return;
+    const changeElements = ["input", "select", "textarea"].concat(this.constructor._customElements);
+    html.on("change", changeElements.join(","), this._onChangeInput.bind(this));
+    html.find(".editor-content[data-edit]").each((i, div) => this._activateEditor(div));
+    html.find("button.file-picker").click(this._activateFilePicker.bind(this));
+    if ( this._priorState <= this.constructor.RENDER_STATES.NONE ) html.find("[autofocus]")[0]?.focus();
+*/
+
+
+
     //class="rolldip"
     // html.on('change', '.slider', this._onchangeSlider.bind(this));
     //html.find('.slider').change(event => this._onchangeSlider(event));
@@ -282,7 +295,7 @@ export class PlanetSheet extends JournalTextPageSheet {
     const charLevel = actor.system.details.level.value
     let dc = 25 + Math.floor(charLevel * 1.5)
 
-    if (systemData.trade.goods[dataset.id].quantity === 0) dc = 15 + Math.floor(charLevel * 1.5);
+    if (systemData.trade.goods[dataset.id].quantity === 0) dc -= 10;
     let success = false
     let sellPrice = 0
     console.log(dc, result)
@@ -295,144 +308,152 @@ export class PlanetSheet extends JournalTextPageSheet {
     console.log(myShip)
     console.log(myShip.items.contents)
     let totalTons = 0
-const goodsItems = myShip.items.contents.filter((item) => {
-  console.log(item)
- // myShip.deleteEmbeddedDocuments("Item", [item.id])
- if((item.type === "goods") && (item.flags.SFRPG_GT?.type === dataset.id)) 
- {
-  totalTons += item.flags.SFRPG_GT.qty
-  return true
- }
-
-})
-    console.log(goodsItems)
-    
-//console.log(header.dataset, this)
-const date = this.object.system.trade.tradeDataDate
-const parsedDate = SimpleCalendar.api.formatTimestamp(date)
-const goods = foundry.utils.duplicate(this.object.system.trade.goods[dataset.id])
-goods.price = Math.round(goods.price * (1 + (variation / 100)) * 10) / 10
-goods.quantity = totalTons
-let createData = {
-  name: game.i18n.localize(SFRPG_GT.goods[dataset.id]),
-  type: "goods",
-  qty: 0
-};
-let templateData = { sell: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
-console.log(createData, templateData)
-const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
-
-new Dialog({
-  title: game.i18n.format("Sell Items "),
-  content: dlg,
-  buttons: {
-    create: {
-      icon: '<i class="fas fa-check"></i>',
-      label: game.i18n.format("Sell Items"),
-      callback: html => {
-        const form = html[0].querySelector("form");
-        let formDataExtended = new FormDataExtended(form);
-        // console.log(formDataExtended,html)
-        foundry.utils.mergeObject(createData, formDataExtended.object);
-
-        console.log(createData)
-        //this.onBeforeCreateNewItem(createData);
-        createData.lots = Math.round(createData.qty / 25 * 100) / 100
-        createData.bp = Math.round(createData.price / BPValue * 100) / 100
-        templateData.total = { eCr: Math.round(createData.qty * goods.price * 100) / 100, bp: Math.round(createData.lots * createData.bp * 100) / 100 }
-        createData.total =  templateData.total
-        createData.balance = {bp: Math.round((myShip.system.currency.bp + createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp + createData.total.bp) * BPValue * 100) / 100}
-        renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then((cargoDesc) => {
-          const itemData = {
-            name: createData.qty + " tons of " + createData.name,
-            type: createData.type,
-            flags: { SFRPG_GT: { type: dataset.id, qty: createData.qty, goods: goods } },
-            system: {
-              description: { value: cargoDesc, gmNotes: "Bad thing happen" },
-              //description: { value: "This is " + createData.qty + " tons of " + createData.name + "purchased from " + this.object.name + " for " + createData.price + " BP / lot",short:dlg },
-
-              bulk: createData.qty + " tons",
-              price: createData.price,
-            }
-          };
-          //saleValue = templateData.total.bp
-
-          let sellQty = createData.qty
-          goodsItems.forEach((item) => {
-            if (sellQty >= item.flags.SFRPG_GT.qty) {
-              sellQty -= item.flags.SFRPG_GT.qty
-            myShip.deleteEmbeddedDocuments("Item", [item.id])
-            }
-            else {
-              const remainingqty = item.flags.SFRPG_GT.qty - sellQty
-              const update = {
-                                _id : item.id,
-                flags: {SFRPG_GT : {qty  : remainingqty}},
-                name : remainingqty + " tons of " + templateData.name,
-                system : {bulk : remainingqty + " tons",
-                  quantity : Math.round( remainingqty / BPValue * 100 ) / 100 
-                }
-              }
-              console.log (item)
-              console.log (myShip.updateEmbeddedDocuments("Item", [update]))
-              
-              sellQty = 0
-            }
-          });
-
-          //myShip.createEmbeddedDocuments("Item", [itemData]);
-          console.log(myShip)
-          myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp + createData.lots * createData.bp) * 100) / 100  })
-        });
-        // myShip.onBeforeCreateNewItem(itemData);
-        
-        
-        const tradeData = {
-          success: success, 
-          variation: variation, 
-          dc: dc,
-          actor: actor,
-          myShip: myShip,
-          name: createData.name,
-          createData: createData, 
-          variation: variation, 
-          sell: true,
-          buy: false,
-          planet : this.object
-          
-        }
-        this.tradeChatmessage(tradeData)
-
-
-        
+    const goodsItems = myShip.items.contents.filter((item) => {
+      console.log(item)
+      // myShip.deleteEmbeddedDocuments("Item", [item.id])
+      if ((item.type === "goods") && (item.flags.SFRPG_GT?.type === dataset.id)) {
+        totalTons += item.flags.SFRPG_GT.qty
+        return true
       }
+
+    })
+    const sellpercentage = 12
+    const sellItem = duplicate(systemData.trade.goods[dataset.id])
+    const itempath = "system.trade.goods." + dataset.id
+
+    sellItem.price = Math.round(sellItem.price * (1 - (sellpercentage / 100)) * 10) / 10
+    if (this.object.isOwner && totalTons > 0) {
+      const updatedgoods = this.object.update({ [itempath]: sellItem })
+      console.log(sellItem, updatedgoods)
     }
-  },
-  default: "create"
-}).render(true);
-return null;
+    console.log(goodsItems)
+
+    //console.log(header.dataset, this)
+    const date = this.object.system.trade.tradeDataDate
+    const parsedDate = SimpleCalendar.api.formatTimestamp(date)
+    const goods = foundry.utils.duplicate(this.object.system.trade.goods[dataset.id])
+    goods.price = Math.round(goods.price * (1 + (variation / 100)) * 10) / 10
+    goods.quantity = totalTons
+    let createData = {
+      name: game.i18n.localize(SFRPG_GT.goods[dataset.id]),
+      type: "goods",
+      qty: 0
+    };
+    let templateData = { sell: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
+    console.log(createData, templateData)
+    const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
+
+    new Dialog({
+      title: game.i18n.format("Sell Items "),
+      content: dlg,
+      buttons: {
+        create: {
+          icon: '<i class="fas fa-check"></i>',
+          label: game.i18n.format("Sell Items"),
+          callback: html => {
+            const form = html[0].querySelector("form");
+            let formDataExtended = new FormDataExtended(form); // console.log(formDataExtended,html)         
+            foundry.utils.mergeObject(createData, formDataExtended.object);
+            console.log(createData)
+            if (createData.dn25) createData.price = Math.round(createData.price * 0.75 * 10) / 10;
+            if (createData.up25) createData.price = Math.round(createData.price * 1.25 * 10) / 10;
+            createData.lots = Math.round(createData.qty / 25 * 100) / 100
+            createData.bp = Math.round(createData.price / BPValue * 100) / 100
+            templateData.total = { eCr: Math.round(createData.qty * goods.price * 100) / 100, bp: Math.round(createData.lots * createData.bp * 100) / 100 }
+            createData.total = templateData.total
+            createData.balance = { bp: Math.round((myShip.system.currency.bp + createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp + createData.total.bp) * BPValue * 100) / 100 }
+            renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then((cargoDesc) => {
+              const itemData = {
+                name: createData.qty + " tons of " + createData.name,
+                type: createData.type,
+                flags: { SFRPG_GT: { type: dataset.id, qty: createData.qty, goods: goods } },
+                system: {
+                  description: { value: cargoDesc, gmNotes: "Bad thing happen" },
+                  //description: { value: "This is " + createData.qty + " tons of " + createData.name + "purchased from " + this.object.name + " for " + createData.price + " BP / lot",short:dlg },
+
+                  bulk: createData.qty + " tons",
+                  price: createData.price,
+                }
+              };
+              //saleValue = templateData.total.bp
+
+              let sellQty = createData.qty
+              goodsItems.forEach((item) => {
+                if (sellQty >= item.flags.SFRPG_GT.qty) {
+                  sellQty -= item.flags.SFRPG_GT.qty
+                  myShip.deleteEmbeddedDocuments("Item", [item.id])
+                }
+                else {
+                  const remainingqty = item.flags.SFRPG_GT.qty - sellQty
+                  const update = {
+                    _id: item.id,
+                    flags: { SFRPG_GT: { qty: remainingqty } },
+                    name: remainingqty + " tons of " + templateData.name,
+                    system: {
+                      bulk: remainingqty + " tons",
+                      quantity: Math.round(remainingqty / BPValue * 100) / 100
+                    }
+                  }
+                  console.log(item)
+                  console.log(myShip.updateEmbeddedDocuments("Item", [update]))
+
+                  sellQty = 0
+                }
+              });
+
+              //myShip.createEmbeddedDocuments("Item", [itemData]);
+              console.log(myShip)
+              myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp + createData.lots * createData.bp) * 100) / 100 })
+            });
+            // myShip.onBeforeCreateNewItem(itemData);
+
+
+            const tradeData = {
+              success: success,
+              variation: variation,
+              dc: dc,
+              actor: actor,
+              myShip: myShip,
+              name: createData.name,
+              createData: createData,
+              variation: variation,
+              sell: true,
+              buy: false,
+              planet: this.object
+
+            }
+            this.tradeChatmessage(tradeData)
+
+
+
+          }
+        }
+      },
+      default: "create"
+    }).render(true);
+    return null;
 
   }
 
 
-async tradeChatmessage(tradeData) {
- // let templateData = { variation: variation, dc: dc, chatMessage: chatMessage, destsplanetArray: destsplanetArray, purchaseData:purchaseData }
-  
-  console.log(tradeData)
-  const html = await renderTemplate(`modules/sfrpg-galactic-trade/templates/chat-tradeMessage.html`, tradeData);
-  const dc = tradeData.createData.dc
-  const success = tradeData.success
-  const sellPriceSigned = tradeData.createData.bp
-  const chat = ChatMessage.create({
-    user: game.user.id,
-    speaker: {
-      actor: tradeData.myShip,
-      alias: tradeData.actor.name
-    },
-    content: html,
-    //flavor: `DC ${dc} Sell check - ${success ? "success!" : "failure!"} Sell for additional ${sellPriceSigned} BP/Lot `,
-  })
-}
+  async tradeChatmessage(tradeData) {
+    // let templateData = { variation: variation, dc: dc, chatMessage: chatMessage, destsplanetArray: destsplanetArray, purchaseData:purchaseData }
+
+    console.log(tradeData)
+    const html = await renderTemplate(`modules/sfrpg-galactic-trade/templates/chat-tradeMessage.html`, tradeData);
+    const dc = tradeData.createData.dc
+    const success = tradeData.success
+    const sellPriceSigned = tradeData.createData.bp
+    const chat = ChatMessage.create({
+      user: game.user.id,
+      speaker: {
+        actor: tradeData.myShip,
+        alias: tradeData.actor.name
+      },
+      content: html,
+      //flavor: `DC ${dc} Sell check - ${success ? "success!" : "failure!"} Sell for additional ${sellPriceSigned} BP/Lot `,
+    })
+  }
 
 
   async _onchangeSlider(event) {
@@ -489,17 +510,17 @@ async tradeChatmessage(tradeData) {
 
     if (game.modules.get("foundryvtt-simple-calendar")?.active) update["system.trade.tradeDataDate"] = SimpleCalendar.api.timestamp()
     const updatedJournal = await this.object.update(update)
-   // console.log(updatedJournal.name)
-   // for (const [k, v] of Object.entries(updatedJournal.system.trade.goods)) {
-      //  console.log(k, v.price, v.quantity)
-   // }
+    // console.log(updatedJournal.name)
+    // for (const [k, v] of Object.entries(updatedJournal.system.trade.goods)) {
+    //  console.log(k, v.price, v.quantity)
+    // }
 
   }
-/**
- * 
- * @param {Event} event
- * @returns quantity
- */
+  /**
+   * 
+   * @param {Event} event
+   * @returns quantity
+   */
   async calculateQuantity(good) {
     const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis") === "enhanced" ? true : false;
     const systemData = this.object.system
@@ -525,11 +546,11 @@ async tradeChatmessage(tradeData) {
     }
     return Math.max(Math.floor(quantity), 0)
   }
-/**
- * 
- * @param {*} good 
- * @returns 
- */
+  /**
+   * 
+   * @param {*} good 
+   * @returns 
+   */
 
   async calculatePrice(good) {
     const enhanced = game.settings.get("sfrpg-galactic-trade", "tradeBasis") === "enhanced" ? true : false;
@@ -568,18 +589,36 @@ async tradeChatmessage(tradeData) {
    * @returns dayfactor
    */
   async dayfactor() {
+    if (!(game.modules.get("foundryvtt-simple-calendar")?.active)) return 0
     const systemData = this.object.system
+    systemData.trade.cycle.initial
+    //10378972800   
+    const baseDate = 10378972800 + Math.round(systemData.trade.cycle.initial * 24 * 60 * 60 * systemData.details.yearLength)
+
+    const now = SimpleCalendar.api.timestamp()
+
+    const cycle = Math.round((now - baseDate) / (24 * 60 * 60))
+
+
+
     // need to do this instead of random to get the same value for the same day
-    const today = Math.ceil(Math.floor(Math.random() * systemData.details.yearLength))
-    const dayfactor = (Math.sin(today / systemData.details.yearLength * 2 * Math.PI) + 1) * 0.5
+    //const today = Math.ceil(Math.floor(Math.random() * systemData.details.yearLength))
+    const dayfactor = (Math.sin(cycle / systemData.details.yearLength * 2 * Math.PI) + 1) * 0.5
+    /* console.log(this.object.name)
+     console.log(systemData.trade.cycle.initial)
+     console.log(systemData.details.yearLength)
+     console.log(now)
+     console.log(baseDate)
+     console.log(cycle) 
+     console.log(dayfactor)*/
     return dayfactor
   }
 
-/**
- * 
- * @param {*} event 
- * @returns 
- */
+  /**
+   * 
+   * @param {*} event 
+   * @returns 
+   */
   async _onItemCreate3(event) {
     event.preventDefault();
     const systemData = this.object.system
@@ -621,6 +660,12 @@ async tradeChatmessage(tradeData) {
       variation = 1 + Math.floor((result - dc) / 5);
       success = true
     }
+
+
+  
+
+
+    
     //console.log(header.dataset, this)
     const date = this.object.system.trade.tradeDataDate
     const parsedDate = SimpleCalendar.api.formatTimestamp(date)
@@ -632,10 +677,49 @@ async tradeChatmessage(tradeData) {
       type: "goods",
       qty: 0
     };
-    let templateData = { buy: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
-    console.log(createData, templateData)
-    const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
 
+    let compTable = {}
+    game.tables.forEach((value, key) => {
+      if (value.name.startsWith("SFRPG-GT-Comp")) compTable = value
+    });
+    /*{
+      "publicroll": "CHAT.RollPublic",
+      "gmroll": "CHAT.RollPrivate",
+      "blindroll": "CHAT.RollBlind",
+      "selfroll": "CHAT.RollSelf"
+  }*/
+
+    const compRoll = await compTable.draw({ displayChat: true, rollMode: "blindroll" })
+    console.log(compRoll)
+    let gmstring = compRoll.results[0].text
+
+    const startRoll = gmstring.indexOf("[[")
+    const endRoll = gmstring.indexOf("]]")
+    if (!(startRoll === -1 || endRoll === -1)) {
+      console.log(startRoll, endRoll)
+      const dieroll = gmstring.slice(startRoll + 2, endRoll)
+      console.log(dieroll)
+      const rollresult = await new Roll(dieroll).evaluate()
+      console.log(rollresult)
+      const rollresultTotal = " = " + rollresult.result
+
+      const startString = gmstring.slice(0, endRoll + 2)
+      const endString = gmstring.slice(endRoll + 2)
+      gmstring = startString + rollresultTotal + endString
+
+
+    }
+    const pc = gmstring.startsWith("[PC]")
+    const pcstring = gmstring.replace("[PC]", "").trim()
+
+    let templateData = { cdata: pcstring, pc: pc, buy: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
+    console.log(createData, templateData)
+
+
+
+
+
+    const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
     new Dialog({
       title: game.i18n.format("Buy Items"),
       content: dlg,
@@ -648,50 +732,72 @@ async tradeChatmessage(tradeData) {
             let formDataExtended = new FormDataExtended(form);
             // console.log(formDataExtended,html)
             foundry.utils.mergeObject(createData, formDataExtended.object);
-
+            if (createData.dn25) createData.price = Math.round(createData.price * 0.75 * 10) / 10;
+            if (createData.up25) createData.price = Math.round(createData.price * 1.25 * 10) / 10;
             console.log(createData)
+
+
             //this.onBeforeCreateNewItem(createData);
             createData.lots = Math.max(Math.round(createData.qty / 25 * 100) / 100, 0)
-            createData.bp = Math.round(createData.price  / BPValue * 100) / 100
+            createData.bp = Math.round(createData.price / BPValue * 100) / 100
             templateData.total = { eCr: Math.round(createData.qty * goods.price * 100) / 100, bp: Math.round(createData.lots * goods.bp * 100) / 100 }
-            createData.total =  templateData.total
-            createData.balance = {bp: Math.round((myShip.system.currency.bp - createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp - createData.total.bp) * BPValue * 100) / 100}
+            createData.total = templateData.total
+
+
+            createData.balance = { bp: Math.round((myShip.system.currency.bp - createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp - createData.total.bp) * BPValue * 100) / 100 }
             renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then((cargoDesc) => {
               const itemData = {
                 name: createData.qty + " tons of " + createData.name,
                 type: createData.type,
                 flags: { SFRPG_GT: { type: dataset.id, qty: createData.qty, goods: goods } },
                 system: {
-                  description: { value: cargoDesc, gmNotes: "Bad thing happen" },
+                  description: { value: cargoDesc, gmNotes: gmstring },
                   //description: { value: "This is " + createData.qty + " tons of " + createData.name + "purchased from " + this.object.name + " for " + createData.price + " BP / lot",short:dlg },
 
                   bulk: createData.qty + " tons",
-                  price:  createData.bp,
+                  price: createData.bp,
                   quantity: createData.lots
 
                 }
               };
-              myShip.createEmbeddedDocuments("Item", [itemData]);
-            //  console.log(createData.lots, createData.bp, createData.price, Math.round(createData.lots * createData.bp * 100) / 100)
-              myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp - createData.lots * createData.bp) * 100) / 100 })
+              const newGoods = myShip.createEmbeddedDocuments("Item", [itemData]).then((item) => {
+                console.log(item)
+                myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp - createData.lots * createData.bp) * 100) / 100 })
+                const tradeData = {
+                  newGoods: item[0],
+                  success: success,
+                  variation: variation,
+                  dc: dc,
+                  actor: actor,
+                  myShip: myShip,
+                  name: createData.name,
+                  createData: createData,
+                  variation: variation,
+                  sell: false,
+                  buy: true,
+                  planet: this.object
+
+                }
+                this.tradeChatmessage(tradeData)
+
+
+
+                const buyItem = duplicate(systemData.trade.goods[dataset.id])
+                const itempath = "system.trade.goods." + dataset.id
+            
+                buyItem.quantity = Math.max(Math.round( buyItem.quantity - createData.qty),0)
+                if (this.object.isOwner ) {
+                  const updatedgoods = this.object.update({ [itempath]: buyItem })
+                  console.log(buyItem, updatedgoods)
+                }
+
+              });
+              //  console.log(createData.lots, createData.bp, createData.price, Math.round(createData.lots * createData.bp * 100) / 100)
+              // myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp - createData.lots * createData.bp) * 100) / 100 })
             });
             // myShip.onBeforeCreateNewItem(itemData);
 
-            const tradeData = {
-              success: success, 
-              variation: variation, 
-              dc: dc,
-              actor: actor,
-              myShip: myShip,
-              name: createData.name,
-              createData: createData, 
-              variation: variation, 
-              sell: false,
-              buy: true,
-              planet : this.object
-              
-            }
-            this.tradeChatmessage(tradeData)
+
 
           }
         }
