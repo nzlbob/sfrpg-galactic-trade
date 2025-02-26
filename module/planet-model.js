@@ -692,27 +692,34 @@ export class PlanetSheet extends JournalTextPageSheet {
     const compRoll = await compTable.draw({ displayChat: true, rollMode: "blindroll" })
     console.log(compRoll)
     let gmstring = compRoll.results[0].text
-
-    const startRoll = gmstring.indexOf("[[")
-    const endRoll = gmstring.indexOf("]]")
+    console.log(gmstring)
+    const complications = JSON.parse(gmstring)
+    console.log(complications)
+    //let gmstring = compRoll.results[0].text
+    for (const [k, v] of Object.entries(complications)) {
+    const startRoll = v.indexOf("[[")
+    const endRoll = v.indexOf("]]")
     if (!(startRoll === -1 || endRoll === -1)) {
       console.log(startRoll, endRoll)
-      const dieroll = gmstring.slice(startRoll + 2, endRoll)
+      const dieroll = v.slice(startRoll + 2, endRoll)
       console.log(dieroll)
       const rollresult = await new Roll(dieroll).evaluate()
       console.log(rollresult)
       const rollresultTotal = " = " + rollresult.result
 
-      const startString = gmstring.slice(0, endRoll + 2)
-      const endString = gmstring.slice(endRoll + 2)
-      gmstring = startString + rollresultTotal + endString
-
+      const startString = v.slice(0, endRoll + 2)
+      const endString = v.slice(endRoll + 2)
+      complications[k] = startString + rollresultTotal + endString
 
     }
-    const pc = gmstring.startsWith("[PC]")
-    const pcstring = gmstring.replace("[PC]", "").trim()
+  }
 
-    let templateData = { cdata: pcstring, pc: pc, buy: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
+
+    const pc = !(complications.pc === "")
+
+
+
+    let templateData = { cdata: complications.pc, pc: pc, buy: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
     console.log(createData, templateData)
 
 

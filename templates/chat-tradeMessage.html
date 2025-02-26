@@ -56,10 +56,10 @@
             Price
         </td>
         <td style="text-align: center;">
-           {{createData.price}}
+           {{createData.price}} {{#if createData.up25}} (+25%) {{/if}} {{#if createData.dn25}} (-25%) {{/if}}
         </td>
         <td style="text-align: center;">
-            {{createData.bp}}
+            {{createData.bp}} {{#if createData.up25}} (+25%) {{/if}} {{#if createData.dn25}} (-25%) {{/if}}
          </td>
     </tr>
     <tr>
