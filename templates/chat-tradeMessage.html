@@ -1,5 +1,7 @@
 {{console this}}
+<h2> AbadarCorp </h2>
 {{#if buy}}
+
 <h3> Notice of consignment </h3>
 {{/if}} 
 {{#if sell}}
@@ -92,15 +94,16 @@
 {{#if success}}
 <p>Your great negotiating skills (DC {{dc}}) found the opportunity to buy {{variation}} additional lot(s).</p>
 {{/if}}
-<p>{{name}} have been consigned to your ship, {{createData.total.bp}} BP has been direct debited from the {{myShip.name}} trading  account.</p>
+<p>{{name}} have been consigned to your ship, {{createData.total.bp}} BP has been direct debited from the {{myShip.name}} trading account and held in AbadarCorp Trust account.</p>
 {{/if}}
 {{#if sell}}
 {{#if success}}
 <p>Your great negotiating skills (DC {{dc}}) found the opportunity to sell at {{variation}}% higher price.</p>
 {{/if}}
-<p>Trade goods have been delivered to the buyer, {{createData.total.bp}} BP has been deposited to the {{myShip.name}} trading account.</p>
+<p>Trade goods have been delivered to the buyer, {{createData.total.bp}} BP has been deposited to the {{myShip.name}} trading account and funds in AbadarCorp Trust account have been released to the original seller.</p>
 {{/if}}
 <p>Balance: {{createData.balance.bp}} BP. ( {{createData.balance.eCr}} eCr)</p>
 <p>May Abadar bring you good fortune.</p>
+<p style="font-size: 6px;">**All goods remain the property of the seller until final delivery and sale is made to a third party. Goods must be uplifted with seven standard days. Terms and condition apply, refer to the relevant agrrements and adendums as applicable.</p>
 
 

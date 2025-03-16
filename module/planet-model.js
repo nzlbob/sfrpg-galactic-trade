@@ -118,7 +118,7 @@ export class PlanetModel extends foundry.abstract.TypeDataModel {
       if (!SFRPG_GT.goodsData[k]) { delete newGoods[k]; continue }
       const averageGalacticPrice = this.averageGalacticPrice(k)
       v.bp = Math.round(v.price / BPValue * 100) / 100
-      v.lots = Math.max(Math.round(v.quantity / 25 * 100) / 100, 0)
+      v.lots = Math.max(lots(v.quantity), 0)
       v.saleValue = Math.round(v.bp * v.lots * 100) / 100
       v.tooltip = "Trade Total = " + (v.saleValue) + " BP <br> Average Galactic Price = " + averageGalacticPrice + " eCr"
       v.color = ""
@@ -312,7 +312,7 @@ export class PlanetSheet extends JournalTextPageSheet {
       console.log(item)
       // myShip.deleteEmbeddedDocuments("Item", [item.id])
       if ((item.type === "goods") && (item.flags.SFRPG_GT?.type === dataset.id)) {
-        totalTons += item.flags.SFRPG_GT.qty
+        totalTons += tons(item.system.quantity) // item.flags.SFRPG_GT.qty // tons(item.system.quantity)
         return true
       }
 
@@ -379,19 +379,19 @@ export class PlanetSheet extends JournalTextPageSheet {
 
               let sellQty = createData.qty
               goodsItems.forEach((item) => {
-                if (sellQty >= item.flags.SFRPG_GT.qty) {
-                  sellQty -= item.flags.SFRPG_GT.qty
+                if (sellQty >= tons(item.system.quantity)) {
+                  sellQty -= tons(item.system.quantity)
                   myShip.deleteEmbeddedDocuments("Item", [item.id])
                 }
                 else {
-                  const remainingqty = item.flags.SFRPG_GT.qty - sellQty
+                  const remainingqty = tons(item.system.quantity) - sellQty
                   const update = {
                     _id: item.id,
                     flags: { SFRPG_GT: { qty: remainingqty } },
                     name: remainingqty + " tons of " + templateData.name,
                     system: {
                       bulk: remainingqty + " tons",
-                      quantity: Math.round(remainingqty / BPValue * 100) / 100
+                      quantity: lots(remainingqty)
                     }
                   }
                   console.log(item)
@@ -671,7 +671,7 @@ export class PlanetSheet extends JournalTextPageSheet {
     const parsedDate = SimpleCalendar.api.formatTimestamp(date)
     const goods = foundry.utils.duplicate(this.object.system.trade.goods[dataset.id])
     goods.quantity += variation * 25
-    goods.lots = Math.max(Math.round(goods.quantity / 25 * 100) / 100, 0)
+    goods.lots = Math.max(lots(goods.quantity), 0)
     let createData = {
       name: game.i18n.localize(SFRPG_GT.goods[dataset.id]),
       type: "goods",
@@ -815,6 +815,28 @@ export class PlanetSheet extends JournalTextPageSheet {
   }
 }
 
+function credits(bp) {
+  const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue")
+  return Math.floor(bp * BPValue * 10) / 10 
+}
 
+function bp(credits) {
+ // goods.lots = Math.max(Math.round(goods.quantity / 25 * 100) / 100, 0)
+ // createData.bp = Math.round(createData.price / BPValue * 100) / 100
+  const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue")
+  return Math.round(credits / BPValue * 100) / 100
+}
 
+ function tons(lots) {
+ // const BPValue = await game.settings.get("sfrpg-galactic-trade", "BPValue")
+ return Math.floor(lots * 25)
+
+}
+
+function lots(tons) {
+  // const BPValue = await game.settings.get("sfrpg-galactic-trade", "BPValue")
+ // console.log(tons, Math.round(tons / 25 * 100) / 100)
+  return Math.round(tons / 25 * 100) / 100
+
+ }
 

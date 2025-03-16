@@ -9,7 +9,7 @@
       "flags": {}
     }
   ],
-  "version": "0.29",
+  "version": "0.30",
   "compatibility": {
     "minimum": "10",
     "verified": "12",
@@ -28,7 +28,19 @@
         "galactic-trade-rolltables"
       ],
       "color": "#19d6b7"
+    },
+    {
+      "name": "Dynamic Hacking",
+      "packs": [
+        "digital-persona",
+        "digital-items",
+        "digital-scene"
+      ],
+      "color": "#8ac45a"
     }
+
+    
+
   ],
   "packs": [
     {
@@ -43,6 +55,45 @@
       },
       "flags": {},
       "banner": "modules/sfrpg-galactic-trade/images/solarsystems/pactWorlds.webp"
+    },
+    {
+      "label": "Digital Persona",
+      "type": "Actor",
+      "name": "digital-persona",
+      "path": "packs/digital-persona",
+      "system": "sfrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "banner": "modules/sfrpg-galactic-trade/images/rigs/pack_image.webp"
+    },
+    {
+      "label": "Digital Items",
+      "type": "Item",
+      "name": "digital-items",
+      "path": "packs/digital-items",
+      "system": "sfrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "banner": "modules/sfrpg-galactic-trade/images/rigs/pack_image.webp"
+    },
+    {
+      "label": "Digital Scene",
+      "type": "Scene",
+      "name": "digital-scene",
+      "path": "packs/digital-scene",
+      "system": "sfrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "banner": "modules/sfrpg-galactic-trade/images/rigs/pack_image.webp"
     },
     {
       "label": "Galactic Trade Macros",
