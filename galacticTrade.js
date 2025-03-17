@@ -401,6 +401,7 @@ Hooks.once("ready", () => {
 
   console.log("sfrpg-galactic-trade  | [READY] Preloading handlebar templates");
   preloadHandlebarsTemplates();
+  game.settings.set('sfrpg', 'enableGalacticTrade',true)
 })
 
 
