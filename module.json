@@ -9,7 +9,7 @@
       "flags": {}
     }
   ],
-  "version": "0.31",
+  "version": "0.32",
   "compatibility": {
     "minimum": "10",
     "verified": "12",
@@ -25,7 +25,8 @@
       "packs": [
         "galactic-trade",
         "galactic-trade-macros",
-        "galactic-trade-rolltables"
+        "galactic-trade-rolltables",
+        "galactic-trade-actors"
       ],
       "color": "#19d6b7"
     },
@@ -113,6 +114,18 @@
       "type": "RollTable",
       "name": "galactic-trade-rolltables",
       "path": "packs/rolltables",
+      "system": "sfrpg",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "banner": "modules/sfrpg-galactic-trade/images/solarsystems/pactWorlds.webp"
+    },    {
+      "label": "Galactic Trade Encounters",
+      "type": "Actor",
+      "name": "galactic-trade-actors",
+      "path": "packs/trade-actors",
       "system": "sfrpg",
       "ownership": {
         "PLAYER": "OBSERVER",
