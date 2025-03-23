@@ -1,0 +1,22 @@
+<form id="entity-create" autocomplete="off" onsubmit="event.preventDefault();">
+    <div class="form-group">
+        <label>{{localize "Cargo Type"}}</label>
+        <label>{{name}}</label>
+    </div>
+    <h3>Galactic Trade Messages</h3><div class="messages"></div>
+   
+    {{#each messages}}
+    <div class="message" data-tooltip = "{{content}}" ><h4>{{name}}
+        <input type="checkbox" name="{{name}}" /> 
+
+    </h4></div>
+    {{/each}}
+
+  
+
+
+
+
+    {{console this}}
+
+</form>
