@@ -695,7 +695,19 @@ export class PlanetSheet extends JournalTextPageSheet {
     console.log(gmstring)
     const complications = JSON.parse(gmstring)
     console.log(complications)
+
+    TextEditor.enrichHTML(complications.gm, { secrets: true }).then((enriched) => {
+      complications.gme = enriched 
+    })
+   // TextEditor.enrichHTML(complications.pc, { secrets: true }).then((enriched) => {
+  //    complications.pce = enriched 
+  //  })
+    complications.gm = await TextEditor.enrichHTML(complications.gm, { secrets: true })
+    complications.pce = await TextEditor.enrichHTML(complications.pc, { secrets: true })
+
     //let gmstring = compRoll.results[0].text
+
+    /*
     for (const [k, v] of Object.entries(complications)) {
     const startRoll = v.indexOf("[[")
     const endRoll = v.indexOf("]]")
@@ -713,13 +725,13 @@ export class PlanetSheet extends JournalTextPageSheet {
 
     }
   }
-
+*/
 
     const pc = !(complications.pc === "")
 
 
 
-    let templateData = { cdata: complications.pc, pc: pc, buy: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
+    let templateData = { cdata: complications.pce, pc: pc, buy: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
     console.log(createData, templateData)
 
 
