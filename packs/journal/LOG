@@ -1,5 +1,5 @@
-2025/03/25-17:15:25.650 3904 Recovering log #138
-2025/03/25-17:15:25.650 3904 Level-0 table #140: started
-2025/03/25-17:15:25.650 3904 Level-0 table #140: 42717 bytes OK
-2025/03/25-17:15:25.661 3904 Delete type=0 #138
-2025/03/25-17:15:25.661 3904 Delete type=3 #136
+2025/03/26-16:42:19.409 3bfc Recovering log #141
+2025/03/26-16:42:19.409 3bfc Level-0 table #143: started
+2025/03/26-16:42:19.415 3bfc Level-0 table #143: 4480 bytes OK
+2025/03/26-16:42:19.415 3bfc Delete type=0 #141
+2025/03/26-16:42:19.415 3bfc Delete type=3 #139
