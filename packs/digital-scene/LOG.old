@@ -1,3 +1,7 @@
-2025/03/25-17:15:25.756 2134 Recovering log #41
-2025/03/25-17:15:25.760 2134 Delete type=0 #41
-2025/03/25-17:15:25.760 2134 Delete type=3 #40
+2025/04/27-13:08:19.538 4744 Recovering log #74
+2025/04/27-13:08:19.543 4744 Delete type=0 #74
+2025/04/27-13:08:19.543 4744 Delete type=3 #72
+2025/04/27-13:09:33.950 3dc8 Level-0 table #79: started
+2025/04/27-13:09:33.950 3dc8 Level-0 table #79: 0 bytes OK
+2025/04/27-13:09:33.951 3dc8 Delete type=0 #77
+2025/04/27-13:09:33.966 3dc8 Manual compaction at level-0 from '!scenes!tKkrbVLuiJhfXyfj' @ 72057594037927935 : 1 .. '!scenes.walls!tKkrbVLuiJhfXyfj.yhjyKE7tdIZTuPhb' @ 0 : 0; will stop at (end)

@@ -316,9 +316,185 @@ planet.update({"system.trade" : tradeUpdate })
       whisper: [game.user.id]
 
     })
+  },
+
+
+
+  async setNPCSkills(actor) {
+
+/**
+ * @module npc.js
+ * @name NPC Creation Script
+ * @file npc.js
+ * @description This file is used to create NPCs for the game. It uses the NPC array to create 
+ * the NPCs and then uses the skillset to assign skills to the NPCs. It also uses the crew 
+ * modifier to modify the NPCs.
+ * @author Bob
+ * @date 2025-04-27
+ * @version 1.0
+ * @license MIT
+ * 
+ */
+
+const operativeSkillModifier = 1
+const npcArray = [
+    { tier: 0, minor: 0, major: 0, gunner: 0 },
+    { tier: 1, minor: 5, major: 10, gunner: 5 },
+    { tier: 2, minor: 7, major: 12, gunner: 6 },
+    { tier: 3, minor: 8, major: 13, gunner: 7 },
+    { tier: 4, minor: 10, major: 15, gunner: 9 },
+    { tier: 5, minor: 11, major: 16, gunner: 10 },
+    { tier: 6, minor: 13, major: 18, gunner: 11 },
+    { tier: 7, minor: 14, major: 19, gunner: 12, },
+    { tier: 8, minor: 16, major: 21, gunner: 14 },
+    { tier: 9, minor: 17, major: 22, gunner: 15 },
+    { tier: 10, minor: 19, major: 24, gunner: 15 },
+    { tier: 11, minor: 20, major: 25, gunner: 16 },
+    { tier: 12, minor: 22, major: 27, gunner: 17 },
+    { tier: 13, minor: 23, major: 28, gunner: 19 },
+    { tier: 14, minor: 25, major: 30, gunner: 20 },
+    { tier: 15, minor: 26, major: 31, gunner: 22 },
+    { tier: 16, minor: 28, major: 33, gunner: 23 },
+    { tier: 17, minor: 29, major: 34, gunner: 25 },
+    { tier: 18, minor: 31, major: 36, gunner: 26 },
+    { tier: 19, minor: 32, major: 37, gunner: 28 },
+    { tier: 20, minor: 34, major: 39, gunner: 29 }
+]
+const skillset = {
+    captain: {
+        blu: "major",
+        com: "major",
+        dip: "major",
+        eng: "minor",
+        gun: "gunner",
+        int: "major",
+        pil: "minor",
+
+    },
+    chiefMate: {
+        acr: "major",
+        ath: "major",
+
+    },
+    engineer: {
+        com: "minor",
+        eng: "major",
+        gun: "gunner",
+        phs: "major",
+        pil: "minor"
+    },
+    gunner: {
+        gun: "gunner",
+    },
+    magicOfficer: {
+        com: "minor",
+        mys: "major",
+        gun: "gunner",
+    },
+    pilot: {
+        pil: "major"
+
+    },
+    scienceOfficer: {
+        com: "major",
+        eng: "minor",
+        gun: "gunner",
+        pil: "minor"
+    }
+}
+
+const useNPCCrew = actor.system.crew.useNPCCrew
+if (!useNPCCrew) return
+const crewmodifier = 0
+const crewAPL = actor.system.details.tier + crewmodifier
+
+const crew = await duplicate(actor.system.crew.npcData)
+
+/*
+const s=foundry.utils.deepClone(CONFIG.SFRPG.skills);
+    s.gun="Gunnery";
+    const a=await ChoiceDialog.show("Add Skill","Select the skill you wish to add to the role of "+t+"?",
+    {skill:{name:"Skill",options:Object.values(s).sort(),default:Object.values(s)[0]}});
+    if("cancel"===a.resolution)return;
+    let r=null;
+    for(const[e,t]of Object.entries(s)){
+        if(t===a.result.skill){r=e;break}if(!r)return;
+    const i=foundry.utils.deepClone(this.actor.system.crew);
+    i.npcData[t].skills[r]={isTrainedOnly:!1,
+        hasArmorCheckPenalty:!1,
+        value:0,
+        misc:0,
+        ranks:0,
+        ability:"int",
+        subname:"",
+        mod:0,
+        enabled:!0}
+  //  await this.actor.update({"system.crew":i})
+  console.log(i)
+}
+
+*/
+for (let [rolekey, rolevalue] of Object.entries(skillset)) {
+    for (let [skillkey, skillvalue] of Object.entries(rolevalue)) {
+       // console.log(rolekey, skillkey, skillvalue,crew[rolekey])
+       if (!crew[rolekey].numberOfUses) continue
+        if (!crew[rolekey].skills[skillkey]) {
+            crew[rolekey].skills[skillkey] = {
+                isTrainedOnly: false,
+                hasArmorCheckPenalty: false,
+                value: 0,
+                misc: 0,
+                ranks: 0,
+                ability: "int",
+                subname: "",
+                mod: 0,
+                enabled: true
+            }
+        }
+    }
+}
+
+for (let [crewkey, crewvalue] of Object.entries(crew)) {
+    if (!crewvalue.numberOfUses) continue
+    
+    for (let [skillname, skill] of Object.entries(crewvalue.skills)) {
+     //   console.log(skillname, skill)
+        if (skillset[crewkey][skillname] == "major") {
+            skill.mod = npcArray[crewAPL].major 
+           }
+        if (skillset[crewkey][skillname] == "minor") {
+            skill.mod = npcArray[crewAPL].minor 
+           
+        }
+        if (skillset[crewkey][skillname] == "gunner") {
+            skill.mod = npcArray[crewAPL].gunner 
+        }
+
+        if (crewkey == "pilot") {
+            crewvalue.skills[skillname].mod = npcArray[crewAPL].major + operativeSkillModifier
+        }
+        skill.ranks = crewAPL
+
+    }
+}
+console.log(crew)
+
+  await actor.update({"system.crew.npcData":crew})
+
+/**
+ * AA P127
+ * EVERYTHING IS OPTIONAL
+ * When creating an NPC, you are free to enact whatever changes you need to in order to make your creation work the way you intend. For example, an array might tell you to select two special abilities, but you know you need four—or only one. Go ahead and make the change! 
+ * If you want your combatant NPC to have a really high AC but not many Hit Points, you can increase its AC by 1 and use the expert array’s HP. This doesn’t make the statistics wrong; rather, it helps the statistics match your concept. Creating NPCs is fundamentally a creative process, so while these steps are useful to keep the NPC’s capabilities from going too far astray for its CR, don’t treat them as hard restrictions
+ * 
+ * 
+ */
+
   }
 
 }
+
+
 
 Hooks.once("init", async function () {
   CONFIG.SFRPG_GT = SFRPG_GT;
@@ -390,8 +566,8 @@ Hooks.once("ready", () => {
   
     game.settings.register("sfrpg-galactic-trade", "myShip", {
       name: "Trading ship",
-      hint: "The maximum effect economy can have on trade prices. Values > 10 may lead to free goods in Poor systems",
-      scope: "user",
+      hint: "Set the ship that all your trading activities will be based on. ",
+      scope: "client",
       config: true,
       type: String,
       choices: choices

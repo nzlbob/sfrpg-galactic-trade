@@ -662,7 +662,19 @@ export class PlanetSheet extends JournalTextPageSheet {
     }
 
 
-  
+  if(!success){
+
+    const html = '<h2>Galactic Trade</h2><h3>Diplomacy Failure</h3><p>The Seller looks at you with distain, eyes you up and down, then tells you they do not sell to your kind. <br>Maybe they can be persuaded?</p>'
+   // console.log(game.user)
+    const chat = ChatMessage.create({
+      user: game.user.id,
+
+      content: html,
+      //whisper: [game.user.id]
+
+    })
+
+  }
 
 
     
@@ -670,6 +682,11 @@ export class PlanetSheet extends JournalTextPageSheet {
     const date = this.object.system.trade.tradeDataDate
     const parsedDate = SimpleCalendar.api.formatTimestamp(date)
     const goods = foundry.utils.duplicate(this.object.system.trade.goods[dataset.id])
+    if(!success){
+      goods.quantity = 0
+    }
+
+
     goods.quantity += variation * 25
     goods.lots = Math.max(lots(goods.quantity), 0)
     let createData = {
