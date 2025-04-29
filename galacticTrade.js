@@ -21,9 +21,117 @@ class Database {
 
 
 }
+Hooks.on("renderActorSheet", (app, html, data) => {
+  // The value after `??` controls the "default" value for the input
+  //  const myData = app.actor.getFlag("myModule", "myFlag", "myData") ?? "foobar";
+  // The `value` sets what shows in the input, and `name` is important for the form submission
+//  const myInput = `<input type="text" value="${myData}" name="flags.myModule.myFlag">`;
+  // the jquery work here may be kinda complicated
+//  html.find(".some .selector").after(myInput);
+//console.log("YELLOW----------------",app, html, data)
+const type = app.actor.isToken? "token" : "actor"
+const id = app.actor.isToken? app.token.id : app.actor.id
+
+if ((app.actor.type === "starship") && app.actor.system.crew.useNPCCrew) {
+  const middleColumn = html.find(".crew-settings.flexrow");
+    const button = '<div class="NPCSETCLICK" data-id = "'+id+'"data-type = "'+type+'"> <button type="button"> Set NPC Skills</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
+    //const button = '<div class="NPCSETCLICK" data-id = "'+app.actor.id+'"> <button type="button"> Set NPC Skills</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
+    //  button.click(() => {
+    const thing = middleColumn.find(".settings.flexrow").append(button);
+  //   console.log("Trade Button Clicked")
+  //   console.log("middleColumn", middleColumn,thing)
+
+     html.find(".NPCSETCLICK").click(onSetNPCSkills.bind(html));
+  //    Operations.buyCargo(app.actor)
+ //   });
+  //  html.find(".sheet-header").append(button);
+  }
+  if (app.actor.type === "starship" && !app.actor.isToken) {
+    const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
+    const myShip = game.actors.directory.documents.find((actor) => actor.uuid === currentStarship )
+console.log(myShip,app.actor.id,currentStarship)
+
+  const buttonclass = myShip.id === app.actor.id? "ISSHIPSETCLICK" : "NOTSHIPSETCLICK"
+const tradetext = myShip.id === app.actor.id? "My Trade Ship" : "Set as My Ship"
 
 
 
+    const middleColumn = html.find(".inventory-filters");
+      const button = '<div class="'+buttonclass+'" data-id = "'+id+'"data-type = "'+type+'"> <button type="button"> '+tradetext+'</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
+      //const button = '<div class="NPCSETCLICK" data-id = "'+app.actor.id+'"> <button type="button"> Set NPC Skills</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
+      //  button.click(() => {
+      const thing = middleColumn.find(".currency.flexrow").append(button);
+    //   console.log("Trade Button Clicked")
+    //   console.log("middleColumn", middleColumn,thing)
+  
+       html.find(".NPCSETCLICK").click(onSetNPCSkills.bind(html));
+       html.find(".NOTSHIPSETCLICK").click(onSetShip.bind(html));
+    //    Operations.buyCargo(app.actor)
+   //   });
+    //  html.find(".sheet-header").append(button);
+    }
+
+
+
+})
+async function onSetShip(event) {
+
+  let data = event.currentTarget.dataset;
+  console.log("HI", data)
+  const actor = await game.actors.get(data.id);
+  console.log(actor)  
+await game.settings.set("sfrpg-galactic-trade", "myShip", actor.uuid)
+ actor.sheet.render(true)
+}
+
+
+async function onSetNPCSkills(event) {
+//  console.log("HI", event)
+  let data = event.currentTarget.dataset;
+  console.log("HI", data)
+  let actor = null; 
+  if (data.type === "token") {
+    const token = await canvas.tokens.get(data.id);
+    console.log(token)
+    actor = token.actor;
+    console.log(actor)  
+  } else {
+    actor = await game.actors.get(data.id);
+    console.log(actor)  
+  }
+
+
+
+
+
+ // const actor = game.actors.get(data.id);
+  console.log(actor)  
+  //setNPCSkills(actor)
+  Operations.setNPCSkills(actor)
+}
+
+/*
+Hooks.on(", extendTokenHud);
+function extendTokenHud(hud, html, data) {
+  const token = canvas.tokens.get(hud.tokenId);
+  const actor = token.actor;
+console.log(token, actor)
+
+*/
+/*
+  if (!actor) return;
+  const ship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
+  if (ship !== actor.uuid) return;
+  const button = $(`<button class="trade-button" title="Trade"><i class="fas fa-dollar-sign"></i></button>`);
+  button.click(() => {
+    console.log("Trade Button Clicked")
+    Operations.buyCargo(actor)
+  });
+  html.find(".token-hud-buttons").append(button);
+
+  
+}
+*/
 
 
 const TradeDatabase = new Database();
@@ -39,7 +147,12 @@ const Operations = {
     const name = game.user.name
     return name;
   },
-
+    /** @override */
+    sheetListeners(html) {
+      super.activateListeners(html);
+      html.find(".NPCSETCLICK").click(onChangeBarAttribute.bind(html));
+  },
+  
   async buyCargo(actor) {
     let typeTable = {}
     let destTable = {}
@@ -332,11 +445,21 @@ planet.update({"system.trade" : tradeUpdate })
  * @author Bob
  * @date 2025-04-27
  * @version 1.0
- * @license MIT
+ * 
+ * Assumptions
+ * Captain: Envoy Skill expertise in Diplomacy 
+ * Pilot: Operative +1 to Piloting
+ * Engineer: Mechanic +1 to Engineering (Bypass)
  * 
  */
+const useNPCCrew = actor.system.crew.useNPCCrew
+if (!useNPCCrew) return
+const crewmodifier = 0
+const crewAPL = actor.system.details.tier + crewmodifier
+const crew = await foundry.utils.duplicate(actor.system.crew.npcData)
+const operativeSkillModifier = 2 // NPC Bonus for skillful and Operative
+const envoySkillModifier = 1  // NPC Bonus for skillful Envoy
 
-const operativeSkillModifier = 1
 const npcArray = [
     { tier: 0, minor: 0, major: 0, gunner: 0 },
     { tier: 1, minor: 5, major: 10, gunner: 5 },
@@ -363,7 +486,7 @@ const npcArray = [
 const skillset = {
     captain: {
         blu: "major",
-        com: "major",
+        com: "minor",
         dip: "major",
         eng: "minor",
         gun: "gunner",
@@ -403,12 +526,7 @@ const skillset = {
     }
 }
 
-const useNPCCrew = actor.system.crew.useNPCCrew
-if (!useNPCCrew) return
-const crewmodifier = 0
-const crewAPL = actor.system.details.tier + crewmodifier
 
-const crew = await duplicate(actor.system.crew.npcData)
 
 /*
 const s=foundry.utils.deepClone(CONFIG.SFRPG.skills);
@@ -473,13 +591,20 @@ for (let [crewkey, crewvalue] of Object.entries(crew)) {
         if (crewkey == "pilot") {
             crewvalue.skills[skillname].mod = npcArray[crewAPL].major + operativeSkillModifier
         }
+        if ((crewkey == "captain") && (["dip", "int" , "blu" ].includes(skillname) )) {
+          crewvalue.skills[skillname].mod = npcArray[crewAPL].major + envoySkillModifier
+      }
         skill.ranks = crewAPL
 
     }
 }
-console.log(crew)
+console.log(crew, actor)
 
-  await actor.update({"system.crew.npcData":crew})
+  actor.update({"system.crew.npcData":crew}).then(() => {
+    console.log("Crew Updated")
+   // actor.sheet.render(true)
+  })
+ 
 
 /**
  * AA P127

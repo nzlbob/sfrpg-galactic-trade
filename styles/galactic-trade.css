@@ -29,6 +29,66 @@
     border-radius: 4px;
 }
 
+.NPCSETCLICK {
+text-align: right;
+
+}
+.NPCSETCLICK button,
+.SHIPSETCLICK button {
+    background: linear-gradient(130deg, #0c2d4a 0, #235683 40%, #235683 60%, #1d7dd1 100%);
+    color: #fff;
+    border: none;
+    padding: 1px 5px;
+    font-size: var(--font-size-10);
+    font-family: "Exo 2", sans-serif;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
+    line-height: 18px;
+    height: 18px;
+    max-height: 18px;
+    min-height: 18px;
+    width: 80px;
+ }
+
+ .NPCSETCLICK button,
+.NOTSHIPSETCLICK button {
+    background: linear-gradient(130deg, #0c2d4a 0, #235683 40%, #235683 60%, #1d7dd1 100%);
+    color: #fff;
+    border: none;
+    padding: 1px 5px;
+    font-size: var(--font-size-10);
+    font-family: "Exo 2", sans-serif;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
+    line-height: 18px;
+    height: 18px;
+    max-height: 18px;
+    min-height: 18px;
+    width: 80px;
+ }
+
+.ISSHIPSETCLICK button {
+    background: linear-gradient(130deg, #0c4a0c 0, #23833b 40%, #238328 60%, #1dd126 100%);
+    color: #fff;
+    border: none;
+    padding: 1px 5px;
+    font-size: var(--font-size-10);
+    font-family: "Exo 2", sans-serif;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
+    line-height: 18px;
+    height: 18px;
+    max-height: 18px;
+    min-height: 18px;
+    width: 80px;
+ }
+
 .sfrpg-galactic-trade.planet .journal-entry-page {
     margin: 0;
     background: rgba(0, 0, 0, 0.1);
