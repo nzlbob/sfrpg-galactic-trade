@@ -1,7 +1,7 @@
 {
   "id": "sfrpg-galactic-trade",
   "title": "Starfinder Galactic Trade",
-  "description": "This module adds a new system to Starfinder for managing trade between planets. It includes a new journal entry type for planets, a new roll table type for trade goods, and a new macro type for managing galactric trade.",
+  "description": "This module adds a new system to Starfinder for managing trade between planets. It includes a new journal entry type for planets which can be used to buy trade goods and load them into the PC's assigned trading ships. Macros are included for Basic Galactric Trade",
 
   "authors": [
     {
