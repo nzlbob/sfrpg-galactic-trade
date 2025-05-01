@@ -500,19 +500,17 @@ const skillset = {
 
     },
     engineer: {
-        com: "minor",
+     
         eng: "major",
-        gun: "gunner",
-        phs: "major",
-        pil: "minor"
+
     },
     gunner: {
         gun: "gunner",
     },
     magicOfficer: {
-        com: "minor",
+
         mys: "major",
-        gun: "gunner",
+
     },
     pilot: {
         pil: "major"
@@ -520,9 +518,6 @@ const skillset = {
     },
     scienceOfficer: {
         com: "major",
-        eng: "minor",
-        gun: "gunner",
-        pil: "minor"
     }
 }
 
@@ -555,20 +550,19 @@ const s=foundry.utils.deepClone(CONFIG.SFRPG.skills);
 for (let [rolekey, rolevalue] of Object.entries(skillset)) {
     for (let [skillkey, skillvalue] of Object.entries(rolevalue)) {
        // console.log(rolekey, skillkey, skillvalue,crew[rolekey])
-       if (!crew[rolekey].numberOfUses) continue
-        if (!crew[rolekey].skills[skillkey]) {
+      //  if (!crew[rolekey].skills[skillkey]) {
             crew[rolekey].skills[skillkey] = {
                 isTrainedOnly: false,
                 hasArmorCheckPenalty: false,
                 value: 0,
                 misc: 0,
-                ranks: 0,
+                ranks: Math.floor(crewAPL * 0.75),
                 ability: "int",
                 subname: "",
-                mod: 0,
+                mod: npcArray[crewAPL].minor ,
                 enabled: true
             }
-        }
+     //   }
     }
 }
 
@@ -579,13 +573,15 @@ for (let [crewkey, crewvalue] of Object.entries(crew)) {
      //   console.log(skillname, skill)
         if (skillset[crewkey][skillname] == "major") {
             skill.mod = npcArray[crewAPL].major 
+            skill.ranks = crewAPL
            }
         if (skillset[crewkey][skillname] == "minor") {
             skill.mod = npcArray[crewAPL].minor 
-           
+            skill.ranks = Math.floor(crewAPL * 0.75)
         }
         if (skillset[crewkey][skillname] == "gunner") {
             skill.mod = npcArray[crewAPL].gunner 
+            skill.ranks = crewAPL 
         }
 
         if (crewkey == "pilot") {
