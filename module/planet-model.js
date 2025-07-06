@@ -250,14 +250,14 @@ export class PlanetSheet extends JournalTextPageSheet {
     html.find('.setcurrentlocation').click(event => this.setcurrentlocation(event));
     html.find('.rolldip').click(event => this.rolldip(event));
 
-/*
- if ( !this.isEditable ) return;
-    const changeElements = ["input", "select", "textarea"].concat(this.constructor._customElements);
-    html.on("change", changeElements.join(","), this._onChangeInput.bind(this));
-    html.find(".editor-content[data-edit]").each((i, div) => this._activateEditor(div));
-    html.find("button.file-picker").click(this._activateFilePicker.bind(this));
-    if ( this._priorState <= this.constructor.RENDER_STATES.NONE ) html.find("[autofocus]")[0]?.focus();
-*/
+    /*
+     if ( !this.isEditable ) return;
+        const changeElements = ["input", "select", "textarea"].concat(this.constructor._customElements);
+        html.on("change", changeElements.join(","), this._onChangeInput.bind(this));
+        html.find(".editor-content[data-edit]").each((i, div) => this._activateEditor(div));
+        html.find("button.file-picker").click(this._activateFilePicker.bind(this));
+        if ( this._priorState <= this.constructor.RENDER_STATES.NONE ) html.find("[autofocus]")[0]?.focus();
+    */
 
 
 
@@ -290,8 +290,12 @@ export class PlanetSheet extends JournalTextPageSheet {
     }
 
 
-    const roll = await actor.rollSkill(skillToUse)
-    const result = roll.callbackResult.total
+    const roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
+    roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
+    });
+    const result = roll.total
     const charLevel = actor.system.details.level.value
     let dc = 25 + Math.floor(charLevel * 1.5)
 
@@ -646,8 +650,29 @@ export class PlanetSheet extends JournalTextPageSheet {
       }
     }
 
-    const roll = await actor.rollSkill(skillToUse)
-    const result = roll.callbackResult.total
+
+
+    /*
+    if (!roll) 
+    {
+      ui.notifications.warn(game.i18n.format("No Roll Result Returned from Actor Skill Roll using backup roll"));
+      let buroll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
+         //   rollResult = roll.total;
+          roll = {callbackResult : buroll};
+    
+    buroll.toMessage({
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
+          });
+    
+    }
+    */
+    let roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
+    roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
+    });
+    const result = roll.total
     const charLevel = actor.system.details.level.value
     let dc = 15 + Math.floor(charLevel * 1.5)
     if (systemData.trade.goods[dataset.id].quantity === 0) dc = 25 + Math.floor(charLevel * 1.5);
@@ -662,27 +687,27 @@ export class PlanetSheet extends JournalTextPageSheet {
     }
 
 
-  if(!success){
+    if (!success) {
 
-    const html = '<h2>Galactic Trade</h2><h3>Diplomacy Failure</h3><p>The Seller looks at you with distain, eyes you up and down, then tells you they do not sell to your kind. <br>Maybe they can be persuaded?</p>'
-   // console.log(game.user)
-    const chat = ChatMessage.create({
-      user: game.user.id,
+      const html = '<h2>Galactic Trade</h2><h3>Diplomacy Failure</h3><p>The Seller looks at you with distain, eyes you up and down, then tells you they do not sell to your kind. <br>Maybe they can be persuaded?</p>'
+      // console.log(game.user)
+      const chat = ChatMessage.create({
+        user: game.user.id,
 
-      content: html,
-      //whisper: [game.user.id]
+        content: html,
+        //whisper: [game.user.id]
 
-    })
+      })
 
-  }
+    }
 
 
-    
+
     //console.log(header.dataset, this)
     const date = this.object.system.trade.tradeDataDate
     const parsedDate = SimpleCalendar.api.formatTimestamp(date)
     const goods = foundry.utils.duplicate(this.object.system.trade.goods[dataset.id])
-    if(!success){
+    if (!success) {
       goods.quantity = 0
     }
 
@@ -713,12 +738,12 @@ export class PlanetSheet extends JournalTextPageSheet {
     const complications = JSON.parse(gmstring)
     console.log(complications)
 
-    TextEditor.enrichHTML(complications.gm, { secrets: true }).then((enriched) => {
-      complications.gme = enriched 
-    })
-   // TextEditor.enrichHTML(complications.pc, { secrets: true }).then((enriched) => {
-  //    complications.pce = enriched 
-  //  })
+  //  TextEditor.enrichHTML(complications.gm, { secrets: true }).then((enriched) => {
+   //   complications.gme = enriched
+   // })
+    // TextEditor.enrichHTML(complications.pc, { secrets: true }).then((enriched) => {
+    //    complications.pce = enriched 
+    //  })
     complications.gm = await TextEditor.enrichHTML(complications.gm, { secrets: true })
     complications.pce = await TextEditor.enrichHTML(complications.pc, { secrets: true })
 
@@ -820,9 +845,9 @@ export class PlanetSheet extends JournalTextPageSheet {
 
                 const buyItem = duplicate(systemData.trade.goods[dataset.id])
                 const itempath = "system.trade.goods." + dataset.id
-            
-                buyItem.quantity = Math.max(Math.round( buyItem.quantity - createData.qty),0)
-                if (this.object.isOwner ) {
+
+                buyItem.quantity = Math.max(Math.round(buyItem.quantity - createData.qty), 0)
+                if (this.object.isOwner) {
                   const updatedgoods = this.object.update({ [itempath]: buyItem })
                   console.log(buyItem, updatedgoods)
                 }
@@ -846,26 +871,26 @@ export class PlanetSheet extends JournalTextPageSheet {
 
 function credits(bp) {
   const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue")
-  return Math.floor(bp * BPValue * 10) / 10 
+  return Math.floor(bp * BPValue * 10) / 10
 }
 
 function bp(credits) {
- // goods.lots = Math.max(Math.round(goods.quantity / 25 * 100) / 100, 0)
- // createData.bp = Math.round(createData.price / BPValue * 100) / 100
+  // goods.lots = Math.max(Math.round(goods.quantity / 25 * 100) / 100, 0)
+  // createData.bp = Math.round(createData.price / BPValue * 100) / 100
   const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue")
   return Math.round(credits / BPValue * 100) / 100
 }
 
- function tons(lots) {
- // const BPValue = await game.settings.get("sfrpg-galactic-trade", "BPValue")
- return Math.floor(lots * 25)
+function tons(lots) {
+  // const BPValue = await game.settings.get("sfrpg-galactic-trade", "BPValue")
+  return Math.floor(lots * 25)
 
 }
 
 function lots(tons) {
   // const BPValue = await game.settings.get("sfrpg-galactic-trade", "BPValue")
- // console.log(tons, Math.round(tons / 25 * 100) / 100)
+  // console.log(tons, Math.round(tons / 25 * 100) / 100)
   return Math.round(tons / 25 * 100) / 100
 
- }
+}
 

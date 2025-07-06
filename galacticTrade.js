@@ -171,8 +171,12 @@ const Operations = {
     const charLevel = actor.system.details.level.value
     const dc = 10 + Math.floor(charLevel * 1.5)
     const chatMessage = "Cargo Search DC " + dc
-    const roll = await actor.rollSkill(skillToUse, { chatMessage: chatMessage })
-    const result = roll.callbackResult.total
+    const roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
+    roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
+    });
+    const result = roll.total
     let cargo = "1d4"
     let variation = "0"
     if (result < dc) { cargo = "0" }
@@ -341,8 +345,12 @@ planet.update({"system.trade" : tradeUpdate })
       }
     }
 
-    const roll = await actor.rollSkill(skillToUse)
-    const result = roll.callbackResult.total
+    const roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
+    roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: actor }),
+      flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
+    });
+    const result = roll.total
     const charLevel = actor.system.details.level.value
     const dc = 15 + Math.floor(charLevel * 1.5)
     let success = false

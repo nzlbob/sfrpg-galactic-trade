@@ -16,7 +16,28 @@ export const SFRPG_GT = {};
 };
 
 */
-
+SFRPG_GT.skills = {
+    "acr": "SFRPG.SkillAcr",
+    "ath": "SFRPG.SkillAth",
+    "blu": "SFRPG.SkillBlu",
+    "com": "SFRPG.SkillCom",
+    "cul": "SFRPG.SkillCul",
+    "dip": "SFRPG.SkillDip",
+    "dis": "SFRPG.SkillDis",
+    "eng": "SFRPG.SkillEng",
+    "int": "SFRPG.SkillInt",
+    "lsc": "SFRPG.SkillLsc",
+    "med": "SFRPG.SkillMed",
+    "mys": "SFRPG.SkillMys",
+    "per": "SFRPG.SkillPer",
+    "pro": "SFRPG.SkillPro",
+    "phs": "SFRPG.SkillPsc",
+    "pil": "SFRPG.SkillPil",
+    "sen": "SFRPG.SkillSen",
+    "sle": "SFRPG.SkillSle",
+    "ste": "SFRPG.SkillSte",
+    "sur": "SFRPG.SkillSur"
+},
 
 SFRPG_GT.planets = {
     space: {

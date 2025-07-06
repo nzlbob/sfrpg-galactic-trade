@@ -25,15 +25,15 @@ Setup
 1. Load the module in your Starfinder game. Simple Calander is also required.
 2. Copy the Galactic Trade Journal Folder, Macros and Roll Tables into your game.
 3. In Starfinder Galactic Tade Configure Game Settings. 
-4. Each Player will need to have ownership of a starship to keep a track of BP and cargo purchases. This is set in the Starfinder Galactic Tade Configure Game Settings page from a drop down of all owned ships. The game will need to be reloaded if new ownership of a ship is granted to a player.
-5. Open the Galactic Trade Journal. Each planet page has a details and a trade tab.
+4. Each Player will need to have ownership of a starship to keep a track of BP and cargo purchases. This is set on the inventory page of a starship. (The starship must be a starship not a token)
+5. Open the Galactic Trade Journal. Each planet page has a details and trade tab.
 Modifying Planets
 1. To modify a planet, edit the journal entry.
 2. On the Details tab, set the economic factors as required. 
 3. The Import / Export % sliders for the commodity types set the price and demand for goods of that type. A low % is an importer of goods so prices will be high and there will be few for sale.
 4. The trading port % will increase the volume of goods available. For trading hubs like Absolom station, set the trading port to 100% and import / export % also be close to 100%.
 5. On the trade tab, the goods that are available for free (legal) trade are set, as well as illegal trade. Illegal trade is not prevented, but it is a great hook for role playing, if the PCs decide to trade in prohibited goods. PC's might get an import permit from a corrupt official or conduct a clandestine drop.
-6. The Tons available can be manually set, however these will be over written when the "Update Prices" button is pressed.
+6. The Tons available can be manually set, however these will be over written if the "Update Prices" button is pressed.
 
 GM Guide
 1. Consider the trade page, not as a stock market but more of a service where individuals advertise contracts. PC's will undoubtedly proclaim they will sell the BC for credits, but that's not how it works! The "Purchase" is a bond paid in bp to Abadar Corp ownership remains with the seller until the space truckers find a buyer.  
@@ -61,6 +61,10 @@ Selling goods
 3. PC presses sell button, and a skill roll will generate. The DC is 25 + 1.5 x level for markets with > 0 goods for sale and 15 + 1.5 x level for markets with 0 available to sell. for every 1 over the DC the player will be able to sell at 1% bonus price.
 4. As above the sell popup allows the PC to alter the price. On hitting the sell items button the goods in the cargo hold will be removed. Partial and multi lots can be sold in one sale. BP will be deposited into the ship BP and a Notice of delivery appear in chat.
 
+Random Events
+Configure your own Complications using the SFRPG-GT-Complications roll table. Format must be json style. @ links can be used
+{"gm" : "GM's Message here" , "pc" : "PC's Message here  @Check[type:sense-motive]"}
+
 ## Dynamic Hacking
 
 Dynamic Hacking from Tech Revolution also included. Uses Drones as Digital Persona. Work in progress
@@ -71,7 +75,7 @@ Unlikely, this is as is where is.
 
 ## License
 
-This module is not licensed and developed for shits and giggles. Starfinder belongs to Paizo. 
+This module is not licensed and developed for shits and giggles. Starfinder belongs to Paizo. SFRPG-VTT belongs to some great dudes who remain nameless 
 
 ## Contact
 
