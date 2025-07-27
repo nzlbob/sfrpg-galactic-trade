@@ -222,7 +222,7 @@ export class PlanetSheet extends JournalTextPageSheet {
       context.isGM = game.user.isGM;
 
       const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
-      const myShip = game.actors.directory.documents.find((actor) => actor.uuid === currentStarship)
+      const myShip = game.actors.contents.find((actor) => actor.uuid === currentStarship)
       const myShipLoc = myShip ? myShip.getFlag("sfrpg-galactic-trade", "currentLocation") : null
       context.myShipLoc = myShipLoc == this.object.uuid
       context.currentLoc = myShipLoc == this.object.uuid
@@ -273,7 +273,7 @@ export class PlanetSheet extends JournalTextPageSheet {
     const header = event.currentTarget;
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
     const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue") ?? 25;
-    const myShip = await game.actors.directory.documents.find((actor) => actor.uuid === currentStarship)
+    const myShip = await game.actors.contents.find((actor) => actor.uuid === currentStarship)
     if (!myShip) { return ui.notifications.warn(game.i18n.format("No Trading ship selected in Configure Game Settings")) }
     const dataset = header.dataset;
     const token = game.canvas.tokens.controlled[0]
@@ -487,8 +487,9 @@ export class PlanetSheet extends JournalTextPageSheet {
 
     //console.log(GalacticTrade.Database.setcurrentlocation(this.object.id))
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
-    const myShip = game.actors.directory.documents.find((actor) => actor.uuid === currentStarship)
-
+    const myShip = game.actors.contents.find((actor) => actor.uuid === currentStarship)
+console.log(myShip)
+    if (!myShip) { return ui.notifications.warn(game.i18n.format("No Trading ship selected in Configure Game Settings")) }
     myShip.update({ "flags.sfrpg-galactic-trade.currentLocation": this.object.uuid })
     console.log(currentStarship, myShip)
   }
@@ -629,7 +630,7 @@ export class PlanetSheet extends JournalTextPageSheet {
     const header = event.currentTarget;
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
     const BPValue = game.settings.get("sfrpg-galactic-trade", "BPValue") ?? 25;
-    const myShip = await game.actors.directory.documents.find((actor) => actor.uuid === currentStarship)
+    const myShip = await game.actors.contents.find((actor) => actor.uuid === currentStarship)
     if (!myShip) { return ui.notifications.warn(game.i18n.format("No Trading ship selected in Configure Game Settings")) }
     const dataset = header.dataset;
 

@@ -32,14 +32,14 @@ Hooks.on("renderActorSheet", (app, html, data) => {
 const type = app.actor.isToken? "token" : "actor"
 const id = app.actor.isToken? app.token.id : app.actor.id
 
-
+console.log("Actor Sheet Rendered",app.actor,type,id)
   if (app.actor.type === "starship" && !app.actor.isToken) {
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
-    const myShip = game.actors.directory.documents.find((actor) => actor.uuid === currentStarship )
+    const myShip = game.actors.contents.find((actor) => actor.uuid === currentStarship )
 console.log(myShip,app.actor.id,currentStarship)
-
-  const buttonclass = myShip.id === app.actor.id? "ISSHIPSETCLICK" : "NOTSHIPSETCLICK"
-const tradetext = myShip.id === app.actor.id? "My Trade Ship" : "Set as My Ship"
+const shipIsSet = myShip && myShip.id === app.actor.id
+  const buttonclass = shipIsSet? "ISSHIPSETCLICK" : "NOTSHIPSETCLICK"
+const tradetext = shipIsSet? "My Trade Ship" : "Set as My Ship"
 
 
 
@@ -194,7 +194,7 @@ const Operations = {
 
 const purchaseData = {}
 const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
-const myShip = await game.actors.directory.documents.find((actor) => actor.uuid === currentStarship )
+const myShip = await game.actors.contents.find((actor) => actor.uuid === currentStarship )
 if (!myShip) return ui.notifications.warn("No Starship Selected") 
 purchaseData.ship = myShip
 purchaseData.name = myShip.name
@@ -479,6 +479,10 @@ Hooks.once("init", async function () {
       enhanced: "Enhanced Galactic Trade System"
     }
   });
+
+
+
+
 /*
   game.settings.register("sfrpg-galactic-trade", "tradeDate", {
     name: "Trade Date",
@@ -493,23 +497,25 @@ Hooks.once("init", async function () {
 Hooks.once("ready", () => {
   console.log(`sfrpg-galactic-trade  | [READY] Preparing system for operation`);
   const readyTime = (new Date()).getTime();
-
-  const myShip = game.actors.directory.documents.filter((actor) => actor.type === "starship" )
-  console.log(myShip)
-  const choices = {}
-  myShip.forEach((actor) => {
-    choices[actor.uuid] = actor.name
-  });
-
-  
+console.log(`sfrpg-galactic-trade  | [READY] System ready at ${readyTime}`);
     game.settings.register("sfrpg-galactic-trade", "myShip", {
       name: "Trading ship",
       hint: "Set the ship that all your trading activities will be based on. ",
       scope: "client",
       config: false,
       type: String,
-      choices: choices
+      //
     });
+console.log(game.actors)
+ // const myShip = game.actors.contents.filter((actor) => actor.type === "starship" )
+ // console.log(myShip)
+ // const choices = {}
+ // myShip.forEach((actor) => {
+ //   choices[actor.uuid] = actor.name
+//  });
+
+  
+
 
   //TokenHUD.template
 
