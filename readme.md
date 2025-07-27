@@ -1,6 +1,6 @@
 # SFRPG Galactic Trade Module
 
-![Foundry v12](https://img.shields.io/badge/foundry-v12-green)
+![Foundry v13](https://img.shields.io/badge/foundry-v13-green)
 
 ## Overview
 
