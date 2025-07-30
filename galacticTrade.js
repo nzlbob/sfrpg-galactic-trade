@@ -5,7 +5,7 @@ console.log("Hello World! This code runs immediately when the file is loaded.");
 
 class Database {
   #entriesStore = new Map()
-#currentlocation = ""
+  #currentlocation = ""
 
   async getEntries() {
     return this.#entriesStore
@@ -22,41 +22,22 @@ class Database {
 
 }
 Hooks.on("renderActorSheet", (app, html, data) => {
-  // The value after `??` controls the "default" value for the input
-  //  const myData = app.actor.getFlag("myModule", "myFlag", "myData") ?? "foobar";
-  // The `value` sets what shows in the input, and `name` is important for the form submission
-//  const myInput = `<input type="text" value="${myData}" name="flags.myModule.myFlag">`;
-  // the jquery work here may be kinda complicated
-//  html.find(".some .selector").after(myInput);
-//console.log("YELLOW----------------",app, html, data)
-const type = app.actor.isToken? "token" : "actor"
-const id = app.actor.isToken? app.token.id : app.actor.id
+  const type = app.actor.isToken ? "token" : "actor"
+  const id = app.actor.isToken ? app.token.id : app.actor.id
 
-console.log("Actor Sheet Rendered",app.actor,type,id)
   if (app.actor.type === "starship" && !app.actor.isToken) {
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
-    const myShip = game.actors.contents.find((actor) => actor.uuid === currentStarship )
-console.log(myShip,app.actor.id,currentStarship)
-const shipIsSet = myShip && myShip.id === app.actor.id
-  const buttonclass = shipIsSet? "ISSHIPSETCLICK" : "NOTSHIPSETCLICK"
-const tradetext = shipIsSet? "My Trade Ship" : "Set as My Ship"
-
-
-
+    const myShip = game.actors.contents.find((actor) => actor.uuid === currentStarship)
+    //console.log(myShip,app.actor.id,currentStarship)
+    const shipIsSet = myShip && myShip.id === app.actor.id
+    const buttonclass = shipIsSet ? "ISSHIPSETCLICK" : "NOTSHIPSETCLICK"
+    const tradetext = shipIsSet ? "My Trade Ship" : "Set as My Ship"
     const middleColumn = html.find(".inventory-filters");
-      const button = '<div class="'+buttonclass+'" data-id = "'+id+'"data-type = "'+type+'"> <button type="button"> '+tradetext+'</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
-      //const button = '<div class="NPCSETCLICK" data-id = "'+app.actor.id+'"> <button type="button"> Set NPC Skills</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
-      //  button.click(() => {
-      const thing = middleColumn.find(".currency.flexrow").append(button);
-    //   console.log("Trade Button Clicked")
-    //   console.log("middleColumn", middleColumn,thing)
-  
-     //  html.find(".NPCSETCLICK").click(onSetNPCSkills.bind(html));
-       html.find(".NOTSHIPSETCLICK").click(onSetShip.bind(html));
-    //    Operations.buyCargo(app.actor)
-   //   });
-    //  html.find(".sheet-header").append(button);
-    }
+    const button = '<div class="' + buttonclass + '" data-id = "' + id + '"data-type = "' + type + '"> <button type="button"> ' + tradetext + '</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
+    const thing = middleColumn.find(".currency.flexrow").append(button);
+    html.find(".NOTSHIPSETCLICK").click(onSetShip.bind(html));
+
+  }
 
 
 
@@ -66,60 +47,31 @@ async function onSetShip(event) {
   let data = event.currentTarget.dataset;
   console.log("HI", data)
   const actor = await game.actors.get(data.id);
-  console.log(actor)  
-await game.settings.set("sfrpg-galactic-trade", "myShip", actor.uuid)
- actor.sheet.render(true)
+  console.log(actor)
+  await game.settings.set("sfrpg-galactic-trade", "myShip", actor.uuid)
+  actor.sheet.render(true)
 }
 
 
 async function onSetNPCSkills(event) {
-//  console.log("HI", event)
+  //  console.log("HI", event)
   let data = event.currentTarget.dataset;
   console.log("HI", data)
-  let actor = null; 
+  let actor = null;
   if (data.type === "token") {
     const token = await canvas.tokens.get(data.id);
     console.log(token)
     actor = token.actor;
-    console.log(actor)  
+    console.log(actor)
   } else {
     actor = await game.actors.get(data.id);
-    console.log(actor)  
+    console.log(actor)
   }
 
+ // console.log(actor)
 
-
-
-
- // const actor = game.actors.get(data.id);
-  console.log(actor)  
-  //setNPCSkills(actor)
   Operations.setNPCSkills(actor)
 }
-
-/*
-Hooks.on(", extendTokenHud);
-function extendTokenHud(hud, html, data) {
-  const token = canvas.tokens.get(hud.tokenId);
-  const actor = token.actor;
-console.log(token, actor)
-
-*/
-/*
-  if (!actor) return;
-  const ship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
-  if (ship !== actor.uuid) return;
-  const button = $(`<button class="trade-button" title="Trade"><i class="fas fa-dollar-sign"></i></button>`);
-  button.click(() => {
-    console.log("Trade Button Clicked")
-    Operations.buyCargo(actor)
-  });
-  html.find(".token-hud-buttons").append(button);
-
-  
-}
-*/
-
 
 const TradeDatabase = new Database();
 
@@ -134,12 +86,12 @@ const Operations = {
     const name = game.user.name
     return name;
   },
-    /** @override */
-    sheetListeners(html) {
-      super.activateListeners(html);
-      html.find(".NPCSETCLICK").click(onChangeBarAttribute.bind(html));
+  /** @override */
+  sheetListeners(html) {
+    super.activateListeners(html);
+    html.find(".NPCSETCLICK").click(onChangeBarAttribute.bind(html));
   },
-  
+
   async buyCargo(actor) {
     let typeTable = {}
     let destTable = {}
@@ -147,7 +99,6 @@ const Operations = {
     const allskills = actor.system.skills
     let skillToUse = "dip"
 
-    // use merchant if greater
 
     for (let [k, v] of Object.entries(allskills)) {
       if (v.subname?.toLowerCase() === "merchant") {
@@ -177,9 +128,6 @@ const Operations = {
     for (let [key, v] of Object.entries(SFRPG_GT.planets.space)) {
       if (!["drift"].includes(key)) destspaceArray.push(key)
     }
-    //  SFRPG_GT.planets.space.forEach((value, key) => {
-    //    if (!["drift"].includes(key)) destspaceArray.push(key)
-    //  });
 
     game.tables.forEach((value, key) => {
       // console.log(key,value);
@@ -192,40 +140,40 @@ const Operations = {
 
     console.log(destRoll)
 
-const purchaseData = {}
-const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
-const myShip = await game.actors.contents.find((actor) => actor.uuid === currentStarship )
-if (!myShip) return ui.notifications.warn("No Starship Selected") 
-purchaseData.ship = myShip
-purchaseData.name = myShip.name
-const location = myShip.getFlag("sfrpg-galactic-trade", "currentLocation") 
-if (!location) return ui.notifications.warn("Current Starship Location is incorrectly defined. Prease set location on the Galactic Trade Journal Planet sheet")
-// const location = myShip.flags["sfrpg-galactic-trade"].currentLocation
-console.log(location,myShip)
+    const purchaseData = {}
+    const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
+    const myShip = await game.actors.contents.find((actor) => actor.uuid === currentStarship)
+    if (!myShip) return ui.notifications.warn("No Starship Selected")
+    purchaseData.ship = myShip
+    purchaseData.name = myShip.name
+    const location = myShip.getFlag("sfrpg-galactic-trade", "currentLocation")
+    if (!location) return ui.notifications.warn("Current Starship Location is incorrectly defined. Prease set location on the Galactic Trade Journal Planet sheet")
+    // const location = myShip.flags["sfrpg-galactic-trade"].currentLocation
+    console.log(location, myShip)
 
-const locationdata = location.split(".")
-if(locationdata.length<4) return ui.notifications.warn("Current Starship Location is incorrectly defined. Prease set location on the Galactic Trade Journal Planet sheet")
-const JournalEntry = game.journal.get(locationdata[1])
-//console.log(JournalEntry)
-const planet = JournalEntry.pages.get(locationdata[3])
+    const locationdata = location.split(".")
+    if (locationdata.length < 4) return ui.notifications.warn("Current Starship Location is incorrectly defined. Prease set location on the Galactic Trade Journal Planet sheet")
+    const JournalEntry = game.journal.get(locationdata[1])
+    //console.log(JournalEntry)
+    const planet = JournalEntry.pages.get(locationdata[3])
 
-purchaseData.planet = planet
+    purchaseData.planet = planet
 
     const destsplanetArray = {}
     destspaceArray.forEach((space) => {
       //const randomplanet = await this.rollRandomWorld(space)
       //console.log(SFRPG_GT.planets.space[space])
-      this.rollRandomWorld(space).then(function(randomplanet){
-      destsplanetArray[space] = { space: game.i18n.localize(SFRPG_GT.planets.space[space]), planet: randomplanet }
+      this.rollRandomWorld(space).then(function (randomplanet) {
+        destsplanetArray[space] = { space: game.i18n.localize(SFRPG_GT.planets.space[space]), planet: randomplanet }
       }
-    )
+      )
     }
     )
 
     //console.log(dlg)
 
     // Create the roll and the corresponding message
-    let templateData = { variation: variation, dc: dc, chatMessage: chatMessage, destsplanetArray: destsplanetArray, purchaseData:purchaseData }
+    let templateData = { variation: variation, dc: dc, chatMessage: chatMessage, destsplanetArray: destsplanetArray, purchaseData: purchaseData }
     console.log(templateData)
     const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/chat-buy.html`, templateData);
     const r = await new Roll(cargo, rollData);
@@ -240,76 +188,67 @@ purchaseData.planet = planet
 
   },
 
-//    for (const [k, v] of Object.entries(SFRPG_GT.goodsData)) {
-
-// newGoods[k] = { price: 10, quantity: 10, tooltip: "", noBuy: true, noSell: true, illegalBuy: false, illegalSell: false }
-// console.log(newGoods, k, v)
-//}
-
-
-
-
   async updateAllGoods() {
     for (const journal of game.journal.contents) {
-  //  for (let [k1, journal] of Object.entries(game.journal)) {
-    console.log(journal)
-    for (const planet of journal.pages.contents) {
-     // for (let [k2, planet] of Object.entries(journal.pages)) {
-    //    console.log(planet)
+      //  for (let [k1, journal] of Object.entries(game.journal)) {
+      console.log(journal)
+      for (const planet of journal.pages.contents) {
+        // for (let [k2, planet] of Object.entries(journal.pages)) {
+        //    console.log(planet)
         const tradeUpdate = duplicate(planet.system.trade)
         const goodsUpdate = {}
         for (let [k2, good] of Object.entries(SFRPG_GT.goodsData)) {
-         // console.log(k2)
+          // console.log(k2)
           // is there an existing entry ??
           let illegal = false
           let legal = true
           if (["robots", "narcotics"].includes(k2)) {
-            if (["anarchy","feudal","corporate","multigovernment"].includes(planet.system.attributes.economy.government) ){
-           console.log(k2,planet.system.attributes.economy.government)
+            if (["anarchy", "feudal", "corporate", "multigovernment"].includes(planet.system.attributes.economy.government)) {
+              console.log(k2, planet.system.attributes.economy.government)
               illegal = true
-            legal = false
+              legal = false
             }
           }
 
-          if (["radioactives","weaponsorammo"].includes(k2)) {
-            if (["democracy","dictatorship"].includes(planet.system.attributes.economy.government) ){
-            illegal = true
-            legal = false
+          if (["radioactives", "weaponsorammo"].includes(k2)) {
+            if (["democracy", "dictatorship"].includes(planet.system.attributes.economy.government)) {
+              illegal = true
+              legal = false
             }
           }
 
-          if (["luxuries","artorantiques", "alienitems","weaponsorammo"].includes(k2)) {
-            if (["communist"].includes(planet.system.attributes.economy.government) ){
-            illegal = true
-            legal = false
+          if (["luxuries", "artorantiques", "alienitems", "weaponsorammo"].includes(k2)) {
+            if (["communist"].includes(planet.system.attributes.economy.government)) {
+              illegal = true
+              legal = false
             }
           }
-          if (["refugees","convicts","weaponsorammo"].includes(k2)) {
-            if (["corporate","democracy"].includes(planet.system.attributes.economy.government) ){
-            illegal = true
-            legal = false
+          if (["refugees", "convicts", "weaponsorammo"].includes(k2)) {
+            if (["corporate", "democracy"].includes(planet.system.attributes.economy.government)) {
+              illegal = true
+              legal = false
             }
           }
 
-         //   console.log(planet.sheet)
-            goodsUpdate[k2] = {
-          
-                price: await planet.sheet.calculatePrice(k2),
-                quantity : await planet.sheet.calculateQuantity(k2),
-                noBuy:  tradeUpdate.goods[k2]? tradeUpdate.goods[k2].noBuy : legal,
-                noSell:  tradeUpdate.goods[k2]? tradeUpdate.goods[k2].noSell : legal, //
-                illegalBuy:  tradeUpdate.goods[k2]? tradeUpdate.goods[k2].illegalBuy : illegal, //
-                illegalSell: tradeUpdate.goods[k2]? tradeUpdate.goods[k2].illegalSell : illegal //
-          //  planet.system.trade.goods[k2].price = await this.calculatePrice(good, planet)
+          //   console.log(planet.sheet)
+          goodsUpdate[k2] = {
+
+            price: await planet.sheet.calculatePrice(k2),
+            quantity: await planet.sheet.calculateQuantity(k2),
+            noBuy: tradeUpdate.goods[k2] ? tradeUpdate.goods[k2].noBuy : legal,
+            noSell: tradeUpdate.goods[k2] ? tradeUpdate.goods[k2].noSell : legal, //
+            illegalBuy: tradeUpdate.goods[k2] ? tradeUpdate.goods[k2].illegalBuy : illegal, //
+            illegalSell: tradeUpdate.goods[k2] ? tradeUpdate.goods[k2].illegalSell : illegal //
+            //  planet.system.trade.goods[k2].price = await this.calculatePrice(good, planet)
           }
-       }
-       console.log(goodsUpdate)
-      delete tradeUpdate.goods
-       tradeUpdate.goods = goodsUpdate
-    console.log(planet.name,planet.system.attributes.population)
-    //    console.log(planet.name, " \n", tradeUpdate)
-       await planet.update({"system.trade" : {} })
-planet.update({"system.trade" : tradeUpdate })
+        }
+        console.log(goodsUpdate)
+        delete tradeUpdate.goods
+        tradeUpdate.goods = goodsUpdate
+        console.log(planet.name, planet.system.attributes.population)
+        //    console.log(planet.name, " \n", tradeUpdate)
+        await planet.update({ "system.trade": {} })
+        planet.update({ "system.trade": tradeUpdate })
 
 
       }
@@ -377,7 +316,7 @@ planet.update({"system.trade" : tradeUpdate })
 
     const spacePlanets = planets.filter(planet => space === "all" ? true : planet.system.details.space === space)
 
-   // console.log(spacePlanets)
+    // console.log(spacePlanets)
 
     const randomIndex = Math.floor(Math.random() * spacePlanets.length)
     const planet = spacePlanets[randomIndex]
@@ -428,7 +367,7 @@ planet.update({"system.trade" : tradeUpdate })
 
 
 
- 
+
 
 }
 
@@ -483,45 +422,45 @@ Hooks.once("init", async function () {
 
 
 
-/*
-  game.settings.register("sfrpg-galactic-trade", "tradeDate", {
-    name: "Trade Date",
-    hint: "The maximum effect economy can have on trade prices. Values > 10 may lead to free goods in Poor systems",
-    scope: "world",
-    config: true,
-    type: Date
-  });
-*/
+  /*
+    game.settings.register("sfrpg-galactic-trade", "tradeDate", {
+      name: "Trade Date",
+      hint: "The maximum effect economy can have on trade prices. Values > 10 may lead to free goods in Poor systems",
+      scope: "world",
+      config: true,
+      type: Date
+    });
+  */
 });
 
 Hooks.once("ready", () => {
   console.log(`sfrpg-galactic-trade  | [READY] Preparing system for operation`);
   const readyTime = (new Date()).getTime();
-console.log(`sfrpg-galactic-trade  | [READY] System ready at ${readyTime}`);
-    game.settings.register("sfrpg-galactic-trade", "myShip", {
-      name: "Trading ship",
-      hint: "Set the ship that all your trading activities will be based on. ",
-      scope: "client",
-      config: false,
-      type: String,
-      //
-    });
-console.log(game.actors)
- // const myShip = game.actors.contents.filter((actor) => actor.type === "starship" )
- // console.log(myShip)
- // const choices = {}
- // myShip.forEach((actor) => {
- //   choices[actor.uuid] = actor.name
-//  });
+  console.log(`sfrpg-galactic-trade  | [READY] System ready at ${readyTime}`);
+  game.settings.register("sfrpg-galactic-trade", "myShip", {
+    name: "Trading ship",
+    hint: "Set the ship that all your trading activities will be based on. ",
+    scope: "client",
+    config: false,
+    type: String,
+    //
+  });
+  console.log(game.actors)
+  // const myShip = game.actors.contents.filter((actor) => actor.type === "starship" )
+  // console.log(myShip)
+  // const choices = {}
+  // myShip.forEach((actor) => {
+  //   choices[actor.uuid] = actor.name
+  //  });
 
-  
+
 
 
   //TokenHUD.template
 
   console.log("sfrpg-galactic-trade  | [READY] Preloading handlebar templates");
   preloadHandlebarsTemplates();
-  game.settings.set('sfrpg', 'enableGalacticTrade',true)
+  game.settings.set('sfrpg', 'enableGalacticTrade', true)
 })
 
 
