@@ -28,7 +28,7 @@ Hooks.on("renderActorSheet", (app, html, data) => {
   if (app.actor.type === "starship" && !app.actor.isToken) {
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
     const myShip = game.actors.contents.find((actor) => actor.uuid === currentStarship)
-    //console.log(myShip,app.actor.id,currentStarship)
+    console.log(myShip,app.actor.id,currentStarship)
     const shipIsSet = myShip && myShip.id === app.actor.id
     const buttonclass = shipIsSet ? "ISSHIPSETCLICK" : "NOTSHIPSETCLICK"
     const tradetext = shipIsSet ? "My Trade Ship" : "Set as My Ship"
@@ -36,7 +36,10 @@ Hooks.on("renderActorSheet", (app, html, data) => {
     const button = '<div class="' + buttonclass + '" data-id = "' + id + '"data-type = "' + type + '"> <button type="button"> ' + tradetext + '</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
     const thing = middleColumn.find(".currency.flexrow").append(button);
     html.find(".NOTSHIPSETCLICK").click(onSetShip.bind(html));
+    const athing = thing.find("input")
+    console.log("THING", athing)
 
+    athing[0].name = ""
   }
 
 
