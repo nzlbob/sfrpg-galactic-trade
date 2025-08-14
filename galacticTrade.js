@@ -109,12 +109,15 @@ const Operations = {
     const charLevel = actor.system.details.level.value
     const dc = 10 + Math.floor(charLevel * 1.5)
     const chatMessage = "Cargo Search DC " + dc
+    
+    
     const roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
     roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: actor }),
       flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
     });
     const result = roll.total
+    console.log("Buy Cargo", result, dc, chatMessage)
     let cargo = "1d4"
     let variation = "0"
     if (result < dc) { cargo = "0" }

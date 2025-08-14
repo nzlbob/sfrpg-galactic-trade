@@ -289,17 +289,18 @@ export class PlanetSheet extends JournalTextPageSheet {
       }
     }
 
-
-    const roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
-    roll.toMessage({
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
-      flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
-    });
-    const result = roll.total
+    /* const roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
+     roll.toMessage({
+       speaker: ChatMessage.getSpeaker({ actor: actor }),
+       flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
+     });
+     */
     const charLevel = actor.system.details.level.value
     let dc = 25 + Math.floor(charLevel * 1.5)
-
     if (systemData.trade.goods[dataset.id].quantity === 0) dc -= 10;
+    const roll = await actor.rollSkill(skillToUse, { dc: dc, displayDC: true, event: event, chatMessage: true });
+
+    const result = roll.roll.total
     let success = false
     let sellPrice = 0
     console.log(dc, result)
@@ -488,7 +489,7 @@ export class PlanetSheet extends JournalTextPageSheet {
     //console.log(GalacticTrade.Database.setcurrentlocation(this.object.id))
     const currentStarship = game.settings.get("sfrpg-galactic-trade", "myShip") ?? {};
     const myShip = game.actors.contents.find((actor) => actor.uuid === currentStarship)
-console.log(myShip)
+    console.log(myShip)
     if (!myShip) { return ui.notifications.warn(game.i18n.format("No Trading ship selected in Configure Game Settings")) }
     myShip.update({ "flags.sfrpg-galactic-trade.currentLocation": this.object.uuid })
     console.log(currentStarship, myShip)
@@ -651,32 +652,18 @@ console.log(myShip)
       }
     }
 
-
-
-    /*
-    if (!roll) 
-    {
-      ui.notifications.warn(game.i18n.format("No Roll Result Returned from Actor Skill Roll using backup roll"));
-      let buroll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
-         //   rollResult = roll.total;
-          roll = {callbackResult : buroll};
-    
-    buroll.toMessage({
-            speaker: ChatMessage.getSpeaker({ actor: actor }),
-            flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
-          });
-    
-    }
-    */
-    let roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
-    roll.toMessage({
-      speaker: ChatMessage.getSpeaker({ actor: actor }),
-      flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
-    });
-    const result = roll.total
+    /* let roll = await (new Roll(`1d20+${actor.system.skills[skillToUse].mod}`)).evaluate();
+     roll.toMessage({
+       speaker: ChatMessage.getSpeaker({ actor: actor }),
+       flavor: game.i18n.localize("SFRPG.ActionSkill") + " - " + game.i18n.localize(SFRPG_GT.skills[skillToUse])
+     });
+     */
     const charLevel = actor.system.details.level.value
     let dc = 15 + Math.floor(charLevel * 1.5)
     if (systemData.trade.goods[dataset.id].quantity === 0) dc = 25 + Math.floor(charLevel * 1.5);
+
+    const roll = await actor.rollSkill(skillToUse, { dc: dc, displayDC: true, event: event, chatMessage: true });
+    const result = roll.roll.total
     let success = false
     let sellPrice = 0
     console.log(dc, result)
@@ -687,10 +674,9 @@ console.log(myShip)
       success = true
     }
 
-
     if (!success) {
 
-      const html = '<h2>Galactic Trade</h2><h3>Diplomacy Failure</h3><p>The Seller looks at you with distain, eyes you up and down, then tells you they do not sell to your kind. <br>Maybe they can be persuaded?</p>'
+      const html = '<h2>Galactic Trade</h2><p>The Seller looks at you with distain, eyes you up and down, then tells you they do not trade to your kind. <br>Maybe they can be persuaded?</p>'
       // console.log(game.user)
       const chat = ChatMessage.create({
         user: game.user.id,
@@ -701,8 +687,6 @@ console.log(myShip)
       })
 
     }
-
-
 
     //console.log(header.dataset, this)
     const date = this.object.system.trade.tradeDataDate
@@ -739,9 +723,9 @@ console.log(myShip)
     const complications = JSON.parse(gmstring)
     console.log(complications)
 
-  //  TextEditor.enrichHTML(complications.gm, { secrets: true }).then((enriched) => {
-   //   complications.gme = enriched
-   // })
+    //  TextEditor.enrichHTML(complications.gm, { secrets: true }).then((enriched) => {
+    //   complications.gme = enriched
+    // })
     // TextEditor.enrichHTML(complications.pc, { secrets: true }).then((enriched) => {
     //    complications.pce = enriched 
     //  })
