@@ -446,7 +446,7 @@ Hooks.once("ready", () => {
   game.settings.register("sfrpg-galactic-trade", "myShip", {
     name: "Trading ship",
     hint: "Set the ship that all your trading activities will be based on. ",
-    scope: "client",
+    scope: "user",
     config: false,
     type: String,
     //

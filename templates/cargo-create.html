@@ -19,24 +19,35 @@
     {{/if}}
     {{/if}}
 
-
-    <div class="form-group">
-        <input type="checkbox" name="dn25" {{checked dn25}} /> <label>{{localize "-25%"}}</label> 
-        <input type="checkbox" name="up25" {{checked up25}} /> <label>{{localize "+25%"}}</label>
-        
+    <div>
+        <hr style="border: 1px solid #ccc; margin: 10px 0;" />
+        <p style="font-weight: bold;"> Trade Complication related price adjustments (ask GM)</p>
     </div>
     <div class="form-group">
-        <label>{{localize "Price"}}</label>
+        <input type="checkbox" name="dn25" {{checked dn25}} /> <label>{{localize "-25%"}}</label>
+        <input type="checkbox" name="up25" {{checked up25}} /> <label>{{localize "+25%"}}</label>
+
+    </div>
+    <div>
+        <hr style="border: 1px solid #ccc; margin: 10px 0;" />
+
+    </div>
+    <div class="form-group">
+        <label>{{localize "Negotiated Price (eCr)"}}</label>
         <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="price" value="{{goods.price}}" />
     </div>
     <div class="form-group">
-        <label>{{localize "Quantity"}}</label>
-        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="qty" value="{{goods.quantity}}" />
+        {{#if sell}}
+        <label>{{localize "Qty in Cargo (Tons)"}}</label>
+        {{/if}}
+        {{#if buy}}
+        <label>{{localize "Max Qty Avail (Tons)"}}</label>
+        {{/if}}
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="qty"
+            value="{{goods.quantity}}" />
     </div>
 
 
-{{console this}}
+    {{console this}}
 
 </form>
-
-

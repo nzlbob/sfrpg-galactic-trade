@@ -310,11 +310,11 @@ export class PlanetSheet extends JournalTextPageSheet {
       variation = 1 + Math.floor(result - dc);
       success = true
     }
-    console.log(myShip)
-    console.log(myShip.items.contents)
+   // console.log(myShip)
+   // console.log(myShip.items.contents)
     let totalTons = 0
     const goodsItems = myShip.items.contents.filter((item) => {
-      console.log(item)
+   //   console.log(item)
       // myShip.deleteEmbeddedDocuments("Item", [item.id])
       if ((item.type === "goods") && (item.flags.SFRPG_GT?.type === dataset.id)) {
         totalTons += tons(item.system.quantity) // item.flags.SFRPG_GT.qty // tons(item.system.quantity)
@@ -322,16 +322,17 @@ export class PlanetSheet extends JournalTextPageSheet {
       }
 
     })
+    //not sure why I did this, pc's cant update journal - disabled for now
     const sellpercentage = 12
     const sellItem = duplicate(systemData.trade.goods[dataset.id])
     const itempath = "system.trade.goods." + dataset.id
 
     sellItem.price = Math.round(sellItem.price * (1 - (sellpercentage / 100)) * 10) / 10
-    if (this.object.isOwner && totalTons > 0) {
+    if (this.object.isOwner && totalTons > 0 && false) {
       const updatedgoods = this.object.update({ [itempath]: sellItem })
       console.log(sellItem, updatedgoods)
     }
-    console.log(goodsItems)
+    // console.log(goodsItems)
 
     //console.log(header.dataset, this)
     const date = this.object.system.trade.tradeDataDate
@@ -345,7 +346,7 @@ export class PlanetSheet extends JournalTextPageSheet {
       qty: 0
     };
     let templateData = { sell: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
-    console.log(createData, templateData)
+   // console.log(createData, templateData)
     const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
 
     new Dialog({
