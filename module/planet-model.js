@@ -362,6 +362,8 @@ export class PlanetSheet extends JournalTextPageSheet {
             foundry.utils.mergeObject(createData, formDataExtended.object);
             console.log(createData)
             if (createData.dn25) createData.price = Math.round(createData.price * 0.75 * 10) / 10;
+            if (createData.dn12) createData.price = Math.round(createData.price * 0.88 * 10) / 10;
+            if (createData.up12) createData.price = Math.round(createData.price * 1.12 * 10) / 10;
             if (createData.up25) createData.price = Math.round(createData.price * 1.25 * 10) / 10;
             createData.lots = Math.round(createData.qty / 25 * 100) / 100
             createData.bp = Math.round(createData.price / BPValue * 100) / 100

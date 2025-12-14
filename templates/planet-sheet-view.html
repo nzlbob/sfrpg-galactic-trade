@@ -1,10 +1,9 @@
-{{#if data.title.show}}
-{{console this}}
-<header class="journal-page-header">
-    <h{{data.title.level}}>{{data.name}}</h{{data.title.level}}>
-</header>
-{{/if}}
 <div class="sfrpg-galactic-trade sheet planetsheet">
+    {{#if data.title.show}}
+    <header class="journal-page-header">
+        <h{{data.title.level}}>{{data.name}}</h{{data.title.level}}>
+    </header>
+    {{/if}}
       <!--
 {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs"  data-group="primary">
@@ -35,7 +34,7 @@
 
 
     <section class="new-body">
-        <div class="tab flexrow" data-group="newTabs" data-tab="details">
+        <div class="tab flexrow gt-details" data-group="newTabs" data-tab="details">
             {{#if enhanced}}
 
             {{> "modules/sfrpg-galactic-trade/templates/planet-biography-enhanced.html"  hideVitals=false}}
