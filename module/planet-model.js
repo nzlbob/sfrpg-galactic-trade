@@ -356,7 +356,7 @@ export class PlanetSheet extends JournalTextPageSheet {
         create: {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.format("Sell Items"),
-          callback: html => {
+          callback: async html => {
             const form = html[0].querySelector("form");
             let formDataExtended = new FormDataExtended(form); // console.log(formDataExtended,html)         
             foundry.utils.mergeObject(createData, formDataExtended.object);
@@ -367,8 +367,10 @@ export class PlanetSheet extends JournalTextPageSheet {
             createData.bp = Math.round(createData.price / BPValue * 100) / 100
             templateData.total = { eCr: Math.round(createData.qty * goods.price * 100) / 100, bp: Math.round(createData.lots * createData.bp * 100) / 100 }
             createData.total = templateData.total
-            createData.balance = { bp: Math.round((myShip.system.currency.bp + createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp + createData.total.bp) * BPValue * 100) / 100 }
-            renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then((cargoDesc) => {
+            const currentBp = Number(await myShip.getFlag("sfrpg-galactic-trade", "bp") ?? 0) || 0;
+            const newBpTotal = currentBp + createData.total.bp;
+            createData.balance = { bp: Math.round(newBpTotal * 100) / 100, eCr: Math.round(newBpTotal * BPValue * 100) / 100 }
+            renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then(async (cargoDesc) => {
               const itemData = {
                 name: createData.qty + " tons of " + createData.name,
                 type: createData.type,
@@ -409,7 +411,9 @@ export class PlanetSheet extends JournalTextPageSheet {
 
               //myShip.createEmbeddedDocuments("Item", [itemData]);
               console.log(myShip)
-              myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp + createData.lots * createData.bp) * 100) / 100 })
+              const curFlag = Number(await myShip.getFlag("sfrpg-galactic-trade", "bp") ?? 0) || 0;
+              const updated = Math.round((curFlag + createData.lots * createData.bp) * 100) / 100;
+              await myShip.setFlag("sfrpg-galactic-trade", "bp", updated)
             });
             // myShip.onBeforeCreateNewItem(itemData);
 
@@ -774,7 +778,7 @@ export class PlanetSheet extends JournalTextPageSheet {
         create: {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.format("Buy Items"),
-          callback: html => {
+          callback: async html => {
             const form = html[0].querySelector("form");
             let formDataExtended = new FormDataExtended(form);
             // console.log(formDataExtended,html)
@@ -791,7 +795,11 @@ export class PlanetSheet extends JournalTextPageSheet {
             createData.total = templateData.total
 
 
-            createData.balance = { bp: Math.round((myShip.system.currency.bp - createData.total.bp) * 100) / 100, eCr: Math.round((myShip.system.currency.bp - createData.total.bp) * BPValue * 100) / 100 }
+            {
+              const currentBp2 = Number(await myShip.getFlag("sfrpg-galactic-trade", "bp") ?? 0) || 0;
+              const newBpTotal2 = currentBp2 - createData.total.bp;
+              createData.balance = { bp: Math.round(newBpTotal2 * 100) / 100, eCr: Math.round(newBpTotal2 * BPValue * 100) / 100 }
+            }
             renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-description.html`, templateData).then((cargoDesc) => {
               const itemData = {
                 name: createData.qty + " tons of " + createData.name,
@@ -807,9 +815,13 @@ export class PlanetSheet extends JournalTextPageSheet {
 
                 }
               };
-              const newGoods = myShip.createEmbeddedDocuments("Item", [itemData]).then((item) => {
+              const newGoods = myShip.createEmbeddedDocuments("Item", [itemData]).then(async (item) => {
                 console.log(item)
-                myShip.update({ "system.currency.bp": Math.round((myShip.system.currency.bp - createData.lots * createData.bp) * 100) / 100 })
+                {
+                  const curFlag2 = Number(await myShip.getFlag("sfrpg-galactic-trade", "bp") ?? 0) || 0;
+                  const updated2 = Math.round((curFlag2 - createData.lots * createData.bp) * 100) / 100;
+                  await myShip.setFlag("sfrpg-galactic-trade", "bp", updated2)
+                }
                 const tradeData = {
                   newGoods: item[0],
                   success: success,

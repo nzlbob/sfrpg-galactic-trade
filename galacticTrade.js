@@ -36,10 +36,9 @@ Hooks.on("renderActorSheet", (app, html, data) => {
     const button = '<div class="' + buttonclass + '" data-id = "' + id + '"data-type = "' + type + '"> <button type="button"> ' + tradetext + '</button> </div>'//  $(`<button class="npc-button" title="NPC"><i class="fas fa-dollar-sign"></i></button>`);
     const thing = middleColumn.find(".currency.flexrow").append(button);
     html.find(".NOTSHIPSETCLICK").click(onSetShip.bind(html));
-    const athing = thing.find("input")
-    console.log("THING", athing)
-
-    athing[0].name = ""
+//    const athing = thing.find('input[name="system.currency.bp"]')
+ //   console.log("THING", athing)
+    // Do not blank the input name; rebind later in the render hook.
   }
 
 
@@ -501,8 +500,6 @@ Hooks.once("setup", function () {
   }
 
 
-
-
   function enrichthis(content, options) {
     const owner = Boolean(options.hash["owner"]);
     const rollData = options.hash["rollData"];
@@ -552,6 +549,45 @@ function setDate() {
 
 }
 
+
+Hooks.on("createActor", async (actor) => {
+  if (actor.type !== "starship") return;
+  const existing = await actor.getFlag("sfrpg-galactic-trade", "bp");
+  if (existing === undefined) {
+    await actor.setFlag("sfrpg-galactic-trade", "bp", 0);
+     await actor.setFlag("sfrpg-galactic-trade", "location", "");
+  }
+});
+
+Hooks.on("renderActorSheet", (sheet, html) => {
+  if (sheet.actor.type !== "starship") return;
+
+  // Transfer any BP from actor.system.currency.bp into the module flag, then zero the currency BP.
+  const bpCurrency = Number(getProperty(sheet.actor.system, "currency.bp") ?? 0) || 0;
+  if (bpCurrency > 0) {
+    Promise.resolve(sheet.actor.getFlag("sfrpg-galactic-trade", "bp")).then(async (currentFlagBp) => {
+      const newFlagBp = (Number(currentFlagBp ?? 0) || 0) + bpCurrency;
+      await sheet.actor.setFlag("sfrpg-galactic-trade", "bp", newFlagBp);
+      await sheet.actor.update({ "system.currency.bp": 0 });
+      ui.notifications.info(`Transferred ${bpCurrency} BP to GTBP flag (total ${newFlagBp}).`);
+    });
+  }
+
+  const section = html.find(".currency, .sfrpg-currency").first();
+  if (!section.length) return;
+
+  // Rebind the BP input to the flag path and set its value from the flag.
+  const bpInput = section.find('input[name="system.currency.bp"], input[name="flags.sfrpg-galactic-trade.bp"], input[name=""]');
+  if (bpInput.length) {
+    Promise.resolve(sheet.actor.getFlag("sfrpg-galactic-trade", "bp")).then(v => {
+      bpInput.attr("type", "text");
+      bpInput.attr("name", "flags.sfrpg-galactic-trade.bp");
+      bpInput.attr("data-dtype", "Number");
+      bpInput.attr("data-tooltip", "Galactic Trade BP");
+      bpInput.val(Number(v ?? 0));
+    });
+  }
+});
 
 function initializeModule() {
   console.log("Initialise Module")
