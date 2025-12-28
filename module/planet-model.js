@@ -159,10 +159,15 @@ export class PlanetModel extends foundry.abstract.TypeDataModel {
 
 // Helper: setup unit switching and totals preview for cargo-create dialog
 function setupCargoCreateForm(formEl) {
-  const bpValue = (() => { const v = parseFloat(formEl.dataset.bpvalue); return isNaN(v) ? 1 : v; })();
-  const goodsPrice = (() => { const v = parseFloat(formEl.dataset.goodsprice); return isNaN(v) ? 0 : v; })();
-  const goodsBpDefault = Math.round(((goodsPrice * 25) / bpValue) * 100) / 100;
 
+  const bpValue = (() => { const v = parseFloat(formEl.dataset.bpvalue); return isNaN(v) ? 1 : v; })();
+
+  console.log("Setting up cargo create form", formEl.dataset, bpValue);
+  const goodsPrice = (() => { const v = parseFloat(formEl.dataset.goodsprice); return isNaN(v) ? 0 : v; })();
+ 
+  console.log("Goods price:", goodsPrice);
+  const goodsBpDefault = Math.round(((goodsPrice ) / bpValue) * 100) / 100;
+  console.log("Goods BP default:", goodsBpDefault);
   const modeRadios = formEl.querySelectorAll('input[name="unitMode"]');
   const priceEcrEl = formEl.querySelector('input[name="price_ecr"]');
   const qtyTonsEl = formEl.querySelector('input[name="qty_tons"]');
@@ -180,6 +185,9 @@ function setupCargoCreateForm(formEl) {
 
   // Seed BP/Lot inputs with a sensible default if empty
   if (priceBpEl && (!priceBpEl.value || priceBpEl.value === '')) priceBpEl.value = String(goodsBpDefault);
+ 
+ 
+ 
   if (qtyLotsEl && (!qtyLotsEl.value || qtyLotsEl.value === '')) {
     const qtyTonsInit = parseFloat(qtyTonsEl?.value) || 0;
     qtyLotsEl.value = String(Math.round((qtyTonsInit / 25) * 100) / 100);
@@ -218,11 +226,14 @@ function setupCargoCreateForm(formEl) {
     let priceBp = toNumber(priceBpEl?.value ?? goodsBpDefault);
     let qtyLots = toNumber(qtyLotsEl?.value ?? 0);
 
+    console.log({priceEcr, qtyTons, priceBp, qtyLots});
+
+
     if (m === 'ecr-ton') {
-      priceBp = Math.round(((priceEcr * 25) / bpValue) * 100) / 100;
+      priceBp = Math.round(((priceEcr ) / bpValue) * 100) / 100;
       qtyLots = Math.round((qtyTons / 25) * 100) / 100;
     } else {
-      priceEcr = Math.round(((priceBp * bpValue) / 25) * 100) / 100;
+      priceEcr = Math.round(((priceBp * bpValue) ) * 100) / 100;
       qtyTons = Math.round((qtyLots * 25) * 100) / 100;
     }
 
@@ -232,7 +243,7 @@ function setupCargoCreateForm(formEl) {
     const factor = 1 + netAdjustment();
     const totalBp = Math.round(priceBp * qtyLots * factor * 100) / 100;
     const totalEcr = Math.round(priceEcr * qtyTons * factor * 100) / 100;
-
+console.log({priceEcr, qtyTons, priceBp, qtyLots, factor, totalBp, totalEcr});
     if (totalBpEl) totalBpEl.textContent = String(totalBp);
     if (totalEcrEl) totalEcrEl.textContent = String(totalEcr);
   }
