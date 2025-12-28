@@ -1,4 +1,4 @@
-<form id="entity-create" autocomplete="off" onsubmit="event.preventDefault();">
+<form id="entity-create" autocomplete="off" onsubmit="event.preventDefault();" data-gt-cargo-create="true" data-bpvalue="{{BPValue}}" data-goodsbp="{{goods.bp}}" data-goodsprice="{{goods.price}}">
     <div class="form-group">
         <label>{{localize "Cargo Type"}}</label>
         <label>{{name}}</label>
@@ -35,21 +35,52 @@
 
     </div>
     <div class="form-group">
-        <label>{{localize "Negotiated Price (eCr)"}}</label>
-        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="price" value="{{goods.price}}" />
+        <label>{{localize "Unit Mode"}}</label>
+        <div style="display:flex;gap:12px;align-items:center;">
+            <label><input type="radio" name="unitMode" value="ecr-ton" checked> eCr/Ton</label>
+            <label><input type="radio" name="unitMode" value="bp-lot"> BP/Lot</label>
+        </div>
     </div>
-    <div class="form-group">
+
+    <!-- Canonical values used by existing logic -->
+    <input type="hidden" name="price" value="{{goods.price}}" />
+    <input type="hidden" name="qty" value="{{goods.quantity}}" />
+
+    <!-- eCr / Ton inputs -->
+    <div class="form-group gt-ecr-ton">
+        <label>{{localize "Negotiated Price (eCr/Ton)"}}</label>
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" step="0.01" name="price_ecr" value="{{goods.price}}" />
+    </div>
+    <div class="form-group gt-ecr-ton">
         {{#if sell}}
         <label>{{localize "Qty in Cargo (Tons)"}}</label>
         {{/if}}
         {{#if buy}}
         <label>{{localize "Max Qty Avail (Tons)"}}</label>
         {{/if}}
-        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" name="qty"
-            value="{{goods.quantity}}" />
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" step="0.01" name="qty_tons" value="{{goods.quantity}}" />
+    </div>
+
+    <!-- BP / Lot inputs -->
+    <div class="form-group gt-bp-lot" style="display:none;">
+        <label>{{localize "Price (BP/Lot)"}}</label>
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" step="0.01" name="price_bp" value="{{goods.bp}}" />
+    </div>
+    <div class="form-group gt-bp-lot" style="display:none;">
+        <label>{{localize "Quantity (Lots)"}}</label>
+        <input {{#if locksheet}}disabled{{/if}} class="singleLine" type="number" step="0.01" name="qty_lots" value="{{goods.lots}}" />
+    </div>
+
+    <!-- Totals Preview -->
+    <div class="form-group">
+        <label>{{localize "Total (preview)"}}</label>
+        <div id="gt-total" style="display:flex;flex-direction:column;gap:4px;">
+            <span><strong>BP:</strong> <span id="gt-total-bp">0</span></span>
+            <span><strong>eCr:</strong> <span id="gt-total-ecr">0</span></span>
+        </div>
     </div>
 
 
-    {{console this}}
+    {{log this}}
 
 </form>

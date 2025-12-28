@@ -156,6 +156,94 @@ export class PlanetModel extends foundry.abstract.TypeDataModel {
 
 
 }
+
+// Helper: setup unit switching and totals preview for cargo-create dialog
+function setupCargoCreateForm(formEl) {
+  const bpValue = (() => { const v = parseFloat(formEl.dataset.bpvalue); return isNaN(v) ? 1 : v; })();
+  const goodsPrice = (() => { const v = parseFloat(formEl.dataset.goodsprice); return isNaN(v) ? 0 : v; })();
+  const goodsBpDefault = Math.round(((goodsPrice * 25) / bpValue) * 100) / 100;
+
+  const modeRadios = formEl.querySelectorAll('input[name="unitMode"]');
+  const priceEcrEl = formEl.querySelector('input[name="price_ecr"]');
+  const qtyTonsEl = formEl.querySelector('input[name="qty_tons"]');
+  const priceBpEl = formEl.querySelector('input[name="price_bp"]');
+  const qtyLotsEl = formEl.querySelector('input[name="qty_lots"]');
+  const canonicalPriceEl = formEl.querySelector('input[name="price"]');
+  const canonicalQtyEl = formEl.querySelector('input[name="qty"]');
+  const totalBpEl = formEl.querySelector('#gt-total-bp');
+  const totalEcrEl = formEl.querySelector('#gt-total-ecr');
+  const ecrGroupEls = formEl.querySelectorAll('.gt-ecr-ton');
+  const bpGroupEls = formEl.querySelectorAll('.gt-bp-lot');
+
+  const cbNames = ['dn25','dn12','up12','up25'];
+  const checkboxes = cbNames.map(n => formEl.querySelector(`input[name="${n}"]`)).filter(Boolean);
+
+  // Seed BP/Lot inputs with a sensible default if empty
+  if (priceBpEl && (!priceBpEl.value || priceBpEl.value === '')) priceBpEl.value = String(goodsBpDefault);
+  if (qtyLotsEl && (!qtyLotsEl.value || qtyLotsEl.value === '')) {
+    const qtyTonsInit = parseFloat(qtyTonsEl?.value) || 0;
+    qtyLotsEl.value = String(Math.round((qtyTonsInit / 25) * 100) / 100);
+  }
+
+  function netAdjustment() {
+    let net = 0;
+    checkboxes.forEach(cb => {
+      if (cb?.checked) {
+        if (cb.name === 'dn25') net -= 0.25;
+        if (cb.name === 'dn12') net -= 0.12;
+        if (cb.name === 'up12') net += 0.12;
+        if (cb.name === 'up25') net += 0.25;
+      }
+    });
+    return net;
+  }
+
+  function currentMode() {
+    const m = Array.from(modeRadios).find(r => r.checked)?.value || 'ecr-ton';
+    return m;
+  }
+
+  function updateVisibility() {
+    const m = currentMode();
+    ecrGroupEls.forEach(el => { el.style.display = m === 'ecr-ton' ? '' : 'none'; });
+    bpGroupEls.forEach(el => { el.style.display = m === 'bp-lot' ? '' : 'none'; });
+  }
+
+  function toNumber(v) { const x = parseFloat(v); return isNaN(x) ? 0 : x; }
+
+  function updateTotals() {
+    const m = currentMode();
+    let priceEcr = toNumber(priceEcrEl?.value ?? goodsPrice);
+    let qtyTons = toNumber(qtyTonsEl?.value ?? 0);
+    let priceBp = toNumber(priceBpEl?.value ?? goodsBpDefault);
+    let qtyLots = toNumber(qtyLotsEl?.value ?? 0);
+
+    if (m === 'ecr-ton') {
+      priceBp = Math.round(((priceEcr * 25) / bpValue) * 100) / 100;
+      qtyLots = Math.round((qtyTons / 25) * 100) / 100;
+    } else {
+      priceEcr = Math.round(((priceBp * bpValue) / 25) * 100) / 100;
+      qtyTons = Math.round((qtyLots * 25) * 100) / 100;
+    }
+
+    if (canonicalPriceEl) canonicalPriceEl.value = String(priceEcr);
+    if (canonicalQtyEl) canonicalQtyEl.value = String(qtyTons);
+
+    const factor = 1 + netAdjustment();
+    const totalBp = Math.round(priceBp * qtyLots * factor * 100) / 100;
+    const totalEcr = Math.round(priceEcr * qtyTons * factor * 100) / 100;
+
+    if (totalBpEl) totalBpEl.textContent = String(totalBp);
+    if (totalEcrEl) totalEcrEl.textContent = String(totalEcr);
+  }
+
+  modeRadios.forEach(r => r.addEventListener('change', () => { updateVisibility(); updateTotals(); }));
+  [priceEcrEl, qtyTonsEl, priceBpEl, qtyLotsEl].filter(Boolean).forEach(el => el.addEventListener('input', updateTotals));
+  checkboxes.forEach(cb => cb.addEventListener('change', updateTotals));
+
+  updateVisibility();
+  updateTotals();
+}
 /**
  * 
  * @param {*} good
@@ -348,6 +436,10 @@ export class PlanetSheet extends JournalTextPageSheet {
     let templateData = { sell: true, purchaserName: actor.name, name: createData.name, goods: goods, type: "goods", location: this.object.name, date: parsedDate, success: success, variation: variation, dc: dc, result: result, skill: skillToUse, charLevel: charLevel, sellPrice: sellPrice, BPValue: BPValue }
    // console.log(createData, templateData)
     const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
+    Hooks.once('renderDialog', (dialog, html) => {
+      const form = html[0]?.querySelector('form[data-gt-cargo-create="true"]');
+      if (form) setupCargoCreateForm(form);
+    });
 
     new Dialog({
       title: game.i18n.format("Sell Items "),
@@ -773,6 +865,10 @@ export class PlanetSheet extends JournalTextPageSheet {
 
 
     const dlg = await renderTemplate(`modules/sfrpg-galactic-trade/templates/cargo-create.html`, templateData);
+    Hooks.once('renderDialog', (dialog, html) => {
+      const form = html[0]?.querySelector('form[data-gt-cargo-create="true"]');
+      if (form) setupCargoCreateForm(form);
+    });
     new Dialog({
       title: game.i18n.format("Buy Items"),
       content: dlg,

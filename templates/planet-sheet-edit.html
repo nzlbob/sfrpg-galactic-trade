@@ -1,6 +1,6 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
     {{> journalEntryPageHeader}}
-    {{console this}}
+    {{log this}}
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs"  data-group="primary">
@@ -30,8 +30,8 @@
 
         {{!-- Stats Tab --}}
         <div class="tab details flexrow gt-details" data-group="primary" data-tab="details">
-            {{console "editer"}}
-            {{console this}} {{console editor}}
+            {{log "editer"}}
+            {{log this}} {{log editor}}
    
           <!-- [{editor
                 enrichedBiography
